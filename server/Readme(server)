@@ -1,0 +1,130 @@
+# Aggie Connect 🟡🟢
+**NC A&T Computer Science Department — Alumni & Student Network**
+
+---
+
+## Project Structure
+```
+aggie-connect/
+├── client/     # React + Tailwind frontend
+└── server/     # Node.js + Express backend
+```
+
+---
+
+## Getting Started
+
+### Prerequisites
+Make sure you have these installed:
+- [Node.js](https://nodejs.org/) v18 or higher
+- npm v9 or higher
+
+---
+
+## Running the Server
+
+### 1. Navigate to the server folder
+```bash
+cd server
+```
+
+### 2. Install dependencies
+```bash
+npm install
+```
+
+### 3. Set up your environment variables
+```bash
+cp .env.example .env
+```
+Then open `.env` and fill in your values.
+
+### 4. Start the server
+
+**Development mode** (auto-restarts on save):
+```bash
+npm run dev
+```
+
+**Production mode:**
+```bash
+npm start
+```
+
+Server runs at: `http://localhost:5000`
+
+### 5. Test the server is running
+Open your browser and go to:
+```
+http://localhost:5000/api/health
+```
+You should see:
+```json
+{ "status": "ok" }
+```
+
+---
+
+## Running the Client
+
+### 1. Navigate to the client folder
+```bash
+cd client
+```
+
+### 2. Install dependencies
+```bash
+npm install
+```
+
+### 3. Start the frontend
+```bash
+npm run dev
+```
+
+Client runs at: `http://localhost:5173`
+
+---
+
+## Running Both at the Same Time
+Open two terminal tabs:
+
+**Tab 1 — Backend:**
+```bash
+cd server && npm run dev
+```
+
+**Tab 2 — Frontend:**
+```bash
+cd client && npm run dev
+```
+
+---
+
+## API Endpoints
+
+| Method | Endpoint | Description | Auth Required |
+|--------|----------|-------------|---------------|
+| POST | `/api/auth/register` | Register a new user | No |
+| POST | `/api/auth/login` | Log in | No |
+| GET | `/api/auth/me` | Get current user | Yes |
+| GET | `/api/users` | Get all users | Yes |
+| GET | `/api/users/:id` | Get user by ID | Yes |
+| PATCH | `/api/users/:id` | Update profile | Yes |
+| DELETE | `/api/users/:id` | Delete account | Yes |
+| GET | `/api/connections` | Get my connections | Yes |
+| POST | `/api/connections/:id` | Send connection request | Yes |
+| PATCH | `/api/connections/:id` | Accept/decline request | Yes |
+
+---
+
+## Docker (Coming Soon)
+Docker setup for containerized testing will be added here.
+
+---
+
+## Tech Stack
+- **Frontend:** React, Tailwind CSS, React Router, Axios
+- **Backend:** Node.js, Express
+- **Auth:** JWT + bcrypt
+- **Database:** SQL (coming soon)

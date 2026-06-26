@@ -1,0 +1,335 @@
+# Aggie Connect — Server Documentation
+
+## Overview
+The backend is a REST API built with Node.js and Express. It handles authentication,
+user profiles, and connections between students and alumni.
+
+---
+
+## Folder Structure
+```
+server/
+├── server.js                  # Entry point — starts the Express app
+├── .env                       # Secret environment variables (never push to GitHub)
+├── .env.example               # Template showing what variables are needed
+├── package.json               # Dependencies and npm scripts
+└── src/
+    ├── config/
+    │   └── db.js              # Database configuration (SQL ready, currently null)
+    ├── controllers/
+    │   ├── authController.js  # Register, login, get current user
+    │   ├── userController.js  # Profile CRUD + smart search
+    │   └── connectionController.js  # Connection requests and network
+    ├── middleware/
+    │   ├── auth.js            # JWT verification — protects routes
+    │   └── errorHandler.js    # Global error catching
+    ├── models/
+    │   ├── User.js            # User data and methods (in-memory, SQL ready)
+    │   └── Connection.js      # Connection data and methods (in-memory, SQL ready)
+    ├── routes/
+    │   ├── auth.js            # /api/auth endpoints
+    │   ├── users.js           # /api/users endpoints
+    │   └── connections.js     # /api/connections endpoints
+    └── utils/
+        └── helpers.js         # Shared utility functions
+```
+
+---
+
+## Files In Depth
+
+### `server.js`
+The entry point for the entire backend. Responsible for:
+- Loading environment variables via `dotenv`
+- Setting up Express middleware (CORS, JSON parsing)
+- Registering all route files under `/api`
+- Mounting the global error handler
+- Starting the server on the configured PORT
+
+CORS is configured to only accept requests from `http://localhost:5173`
+(the React frontend). Update this when deploying to production.
+
+---
+
+### `.env`
+Stores sensitive configuration that should never be committed to GitHub.
+
+| Variable | Purpose |
+|----------|---------|
+| `PORT` | Port the server runs on (default 5000) |
+| `NODE_ENV` | Environment mode: `development` or `production` |
+| `JWT_SECRET` | Private key used to sign and verify login tokens |
+| `JWT_EXPIRES_IN` | How long a login token lasts before expiring |
+
+When SQL is connected, database credentials will also go here.
+
+---
+
+### `src/config/db.js`
+Placeholder for the SQL database connection. Currently exports `null`.
+
+When ready to connect a database:
+1. Install Sequelize and your driver (`pg`, `mysql2`, or `sqlite3`)
+2. Add database credentials to `.env`
+3. Uncomment the Sequelize block in this file
+4. Replace in-memory model methods with Sequelize ORM calls
+
+Supported dialects: PostgreSQL, MySQL, SQLite.
+
+---
+
+### `src/middleware/auth.js`
+A bodyguard function that runs before any protected route handler.
+
+**How it works:**
+1. Reads the `Authorization` header from the incoming request
+2. Strips the `Bearer ` prefix to get the raw token
+3. Verifies the token using `JWT_SECRET`
+4. If valid — attaches the decoded user `{ id, role }` to `req.user` and calls `next()`
+5. If invalid or missing — returns a 401 Unauthorized response
+
+Any route that has `auth` as a second argument is protected:
+```javascript
+router.get('/me', auth, controller.me);  // protected
+router.post('/login', controller.login); // public
+```
+
+---
+
+### `src/middleware/errorHandler.js`
+A global safety net that catches any error passed via `next(err)`.
+
+**How it works:**
+- Logs the full error stack to the terminal for debugging
+- Reads the error's `status` code (defaults to 500 if not set)
+- Sends a clean JSON response to the frontend with the error message
+
+Without this, unhandled errors would either crash the server or
+leave the frontend request hanging forever.
+
+---
+
+### `src/models/User.js`
+Manages all user data. Currently uses an in-memory array that resets
+on server restart. Designed to be swapped out for a Sequelize SQL model.
+
+**Fields:**
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | Number | Auto-incrementing unique ID |
+| `firstName` | String | User's first name |
+| `lastName` | String | User's last name |
+| `email` | String | Unique login email |
+| `password` | String | Bcrypt hashed password |
+| `role` | String | `student` or `alumni` |
+| `gradYear` | Number | Graduation year |
+| `bio` | String | Profile bio |
+| `title` | String | Job title |
+| `company` | String | Current employer |
+| `position` | String | Job position (used for smart search) |
+| `industry` | String | Industry (used for smart search) |
+| `skills` | Array | List of skills (used for smart search) |
+| `linkedInUrl` | String | LinkedIn profile URL |
+| `linkedInSync` | Boolean | Whether LinkedIn auto-sync is enabled |
+| `linkedInData` | Object | Raw data pulled from LinkedIn |
+| `lastSynced` | Date | Timestamp of last LinkedIn sync |
+
+**Methods:**
+| Method | Description |
+|--------|-------------|
+| `findAll()` | Returns all users |
+| `findById(id)` | Returns a single user by ID |
+| `findByEmail(email)` | Returns a user by email (used for login) |
+| `create(data)` | Creates and stores a new user |
+| `updateById(id, data)` | Updates a user's fields |
+| `deleteById(id)` | Removes a user |
+
+---
+
+### `src/models/Connection.js`
+Manages relationships between users. Supports pending, accepted,
+and declined states.
+
+**Fields:**
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | Number | Auto-incrementing unique ID |
+| `requesterId` | Number | ID of the user who sent the request |
+| `receiverId` | Number | ID of the user who received the request |
+| `status` | String | `pending`, `accepted`, or `declined` |
+| `message` | String | Optional note sent with the request |
+| `createdAt` | Date | When the request was sent |
+
+**Methods:**
+| Method | Description |
+|--------|-------------|
+| `findAll()` | Returns all connections |
+| `findByUser(userId)` | Returns all connections a user is part of |
+| `findAccepted(userId)` | Returns only accepted connections |
+| `findPending(userId)` | Returns only incoming pending requests |
+| `findBetween(a, b)` | Checks if two users are already connected |
+| `create(requesterId, receiverId, message)` | Sends a new request |
+| `updateStatus(id, status)` | Accepts or declines a request |
+| `delete(id)` | Removes a connection entirely |
+
+---
+
+### `src/controllers/authController.js`
+Handles all identity-related logic.
+
+**`register`** — POST /api/auth/register
+- Validates the email is not already in use
+- Hashes the password with bcrypt (12 salt rounds)
+- Creates the user with all profile and smart search fields
+- Returns a signed JWT token and sanitized user object
+
+**`login`** — POST /api/auth/login
+- Finds user by email
+- Compares submitted password against stored hash
+- Returns the same vague error whether email or password is wrong
+  (prevents hackers from knowing which one failed)
+- Returns a signed JWT token and sanitized user object
+
+**`me`** — GET /api/auth/me
+- Protected route — requires a valid token
+- Looks up the current user by the ID stored in the token
+- Returns their sanitized profile data
+
+---
+
+### `src/controllers/userController.js`
+Handles profile management and smart search.
+
+**`getAll`** — GET /api/users
+Powers both the directory and smart search. Accepts optional query params:
+
+| Param | Example | Effect |
+|-------|---------|--------|
+| `search` | `?search=software engineer` | Searches name, position, industry, skills |
+| `role` | `?role=alumni` | Filters by student or alumni |
+| `industry` | `?industry=tech` | Filters by industry |
+| `position` | `?position=developer` | Filters by job position |
+| `skill` | `?skill=python` | Filters by a specific skill |
+
+All params can be combined: `?role=alumni&skill=python&industry=tech`
+
+**`getOne`** — GET /api/users/:id
+Returns a single user's full profile by ID.
+
+**`update`** — PATCH /api/users/:id
+Updates a user's profile. Only the owner can update their own profile.
+Accepts all profile fields including LinkedIn and smart search fields.
+
+**`remove`** — DELETE /api/users/:id
+Deletes a user's account. Only the owner can delete their own account.
+
+---
+
+### `src/controllers/connectionController.js`
+Handles the full connection lifecycle between users.
+
+**`getMyConnections`** — GET /api/connections
+Returns all connections the logged in user is part of.
+
+**`getAccepted`** — GET /api/connections/accepted
+Returns only confirmed connections — the user's active network.
+
+**`getPending`** — GET /api/connections/pending
+Returns incoming requests awaiting a response — powers notifications.
+
+**`sendRequest`** — POST /api/connections/:receiverId
+Sends a connection request. Validates:
+- You can't connect with yourself
+- The receiver exists
+- A connection doesn't already exist between these two users
+
+**`updateStatus`** — PATCH /api/connections/:id
+Accepts or declines a request. Validates:
+- The connection exists
+- Only the receiver can accept or decline (not the requester)
+
+**`remove`** — DELETE /api/connections/:id
+Removes a connection. Validates the requester is part of that connection.
+
+---
+
+### `src/routes/`
+Maps HTTP methods and URL paths to controller functions.
+
+**`auth.js`**
+| Method | Path | Auth | Controller |
+|--------|------|------|------------|
+| POST | `/api/auth/register` | No | `authController.register` |
+| POST | `/api/auth/login` | No | `authController.login` |
+| GET | `/api/auth/me` | Yes | `authController.me` |
+
+**`users.js`**
+| Method | Path | Auth | Controller |
+|--------|------|------|------------|
+| GET | `/api/users` | Yes | `userController.getAll` |
+| GET | `/api/users/:id` | Yes | `userController.getOne` |
+| PATCH | `/api/users/:id` | Yes | `userController.update` |
+| DELETE | `/api/users/:id` | Yes | `userController.remove` |
+
+**`connections.js`**
+| Method | Path | Auth | Controller |
+|--------|------|------|------------|
+| GET | `/api/connections` | Yes | `connectionController.getMyConnections` |
+| GET | `/api/connections/accepted` | Yes | `connectionController.getAccepted` |
+| GET | `/api/connections/pending` | Yes | `connectionController.getPending` |
+| POST | `/api/connections/:receiverId` | Yes | `connectionController.sendRequest` |
+| PATCH | `/api/connections/:id` | Yes | `connectionController.updateStatus` |
+| DELETE | `/api/connections/:id` | Yes | `connectionController.remove` |
+
+---
+
+## API Quick Reference
+
+### Auth
+```
+POST   /api/auth/register     Create a new account
+POST   /api/auth/login        Log in and get a token
+GET    /api/auth/me           Get the current logged in user
+```
+
+### Users
+```
+GET    /api/users             List all users / smart search
+GET    /api/users/:id         Get a single profile
+PATCH  /api/users/:id         Update your profile
+DELETE /api/users/:id         Delete your account
+```
+
+### Connections
+```
+GET    /api/connections             All my connections
+GET    /api/connections/accepted    My active network
+GET    /api/connections/pending     Incoming requests
+POST   /api/connections/:id         Send a request
+PATCH  /api/connections/:id         Accept or decline
+DELETE /api/connections/:id         Remove a connection
+```
+
+---
+
+## Planned Features
+- [ ] SQL database integration (Sequelize)
+- [ ] LinkedIn profile sync
+- [ ] Smart search ranking by relevance
+- [ ] Messaging between connected users
+- [ ] Job board / postings
+- [ ] Events and department news
+- [ ] Admin panel
+- [ ] Docker containerization
+
+---
+
+## Running the Server
+```bash
+cd server
+npm install
+npm run dev
+```
+
+Server runs at: `http://localhost:5000`
+Health check: `http://localhost:5000/api/health`
