@@ -1,0 +1,24 @@
+# Secrets — never commit. Use .env.example for the shape.
+.env
+.env.*
+!.env.example
+dbpass
+*.pem
+*.key
+
+# Dependencies and builds
+node_modules/
+dist/
+dist-ssr/
+coverage/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Editor / OS
+.idea/
+.vscode/*
+!.vscode/extensions.json
+.DS_Store
+Thumbs.db
