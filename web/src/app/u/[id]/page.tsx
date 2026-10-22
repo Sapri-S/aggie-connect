@@ -38,13 +38,16 @@ async function Profile({ params }: Pick<PageProps<"/u/[id]">, "params">) {
 
   // RLS returns nothing unless this is your own profile, or you're approved
   // and they're approved, so a hidden profile looks the same as a missing one.
-  const { data: p } = await supabase
+  const { data: p, error } = await supabase
     .from("profiles")
     .select(
       "id, first_name, last_name, role, class_year, headline, job_title, company, major, city, bio, linkedin_url, avatar_path",
     )
     .eq("id", id)
     .maybeSingle();
+  // A query error (say, a migration that hasn't been run) is not the same as
+  // a hidden profile; surface it instead of showing a misleading 404.
+  if (error) throw new Error(`Couldn't load profile (${error.code}: ${error.message})`);
   if (!p) notFound();
 
   const urls = await signAvatarUrls(supabase, [p.avatar_path]);

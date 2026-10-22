@@ -26,14 +26,14 @@ async function EditProfile() {
   } = await supabase.auth.getUser();
   if (!user) redirect("/login?next=/profile/edit");
 
-  const { data: p } = await supabase
+  const { data: p, error } = await supabase
     .from("profiles")
     .select(
       "first_name, last_name, class_year, headline, job_title, company, major, city, bio, linkedin_url, avatar_path",
     )
     .eq("id", user.id)
     .single();
-  if (!p) redirect("/home");
+  if (error) throw new Error(`Couldn't load your profile (${error.code}: ${error.message})`);
 
   const urls = await signAvatarUrls(supabase, [p.avatar_path]);
 
