@@ -32,11 +32,19 @@ export async function SiteHeader() {
   return (
     <HeaderFrame home={user ? "/home" : "/"}>
       {user ? (
+        <>
+        <Link
+          href={`/u/${user.id}`}
+          className="rounded-md px-3 py-1.5 text-ink hover:bg-primary-tint"
+        >
+          My profile
+        </Link>
         <form action="/auth/signout" method="post">
           <button className="rounded-md px-3 py-1.5 text-muted hover:bg-primary-tint hover:text-ink">
             Sign out
           </button>
         </form>
+        </>
       ) : (
         <>
           <Link

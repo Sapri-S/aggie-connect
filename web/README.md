@@ -16,6 +16,7 @@ Next.js 16 + Supabase. See `../docs/PLAN-2.0.md` for the full plan.
    1. `20261022000000_init.sql`
    2. `20261022010000_any_email_signup.sql`
    3. `20261022020000_nc_at.sql`
+   4. `20261022030000_profile_fields.sql` (job title, company, avatars bucket)
 
    You can also use the CLI: `npx supabase link --project-ref <ref>`, then
    `npx supabase db push`.

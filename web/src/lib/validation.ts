@@ -36,6 +36,38 @@ export const linkedInUrl = z
     "Use your LinkedIn profile URL, like https://www.linkedin.com/in/your-name",
   );
 
+// Empty form fields become null, so clearing a field clears it in the database.
+const optionalText = (max: number) =>
+  z
+    .string()
+    .trim()
+    .max(max, `Use ${max} characters or fewer.`)
+    .transform((v) => (v === "" ? null : v));
+
+export const profileSchema = z.object({
+  firstName: z.string().trim().min(1, "First name is required.").max(50),
+  lastName: z.string().trim().min(1, "Last name is required.").max(50),
+  classYear: z.coerce
+    .number()
+    .int()
+    .min(1891, "NC A&T was founded in 1891.")
+    .max(CURRENT_YEAR + 6, "Enter your expected graduation year."),
+  headline: optionalText(120),
+  jobTitle: optionalText(100),
+  company: optionalText(100),
+  major: optionalText(80),
+  city: optionalText(80),
+  bio: optionalText(1000),
+  linkedinUrl: z
+    .string()
+    .trim()
+    .transform((v) => (v === "" ? null : v.replace(/^http:\/\//, "https://")))
+    .pipe(linkedInUrl.nullable()),
+});
+
+export const AVATAR_MAX_BYTES = 4 * 1024 * 1024;
+export const AVATAR_TYPES = ["image/jpeg", "image/png", "image/webp"];
+
 export type FormState = {
   error?: string;
   fieldErrors?: Record<string, string[] | undefined>;

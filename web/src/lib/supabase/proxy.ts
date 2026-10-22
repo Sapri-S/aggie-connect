@@ -4,7 +4,14 @@ import { supabaseKey, supabaseUrl } from "./env";
 
 // Pages that need a signed-in user. Each page also checks on its own;
 // this redirect is a convenience, not the security boundary.
-const PROTECTED_PREFIXES = ["/home", "/onboarding", "/directory", "/admin"];
+const PROTECTED_PREFIXES = [
+  "/home",
+  "/onboarding",
+  "/profile",
+  "/u/",
+  "/directory",
+  "/admin",
+];
 // Pages that only make sense signed out.
 const SIGNED_OUT_ONLY = ["/", "/login", "/signup"];
 

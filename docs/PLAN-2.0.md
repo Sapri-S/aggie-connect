@@ -212,6 +212,80 @@ sign-up → confirm → approve flow. **RLS tests in SQL**, run against the loca
 Supabase stack (`supabase start`) in CI, that act as another user and assert
 reads and writes are denied.
 
+## Production on a $0 budget (target: under 400 users)
+
+Free tiers are far above what 400 people use. The free limits that matter
+are email volume and Supabase pausing.
+
+### Hosting: Vercel Hobby (free)
+
+- Import the GitHub repo in Vercel and set **Root Directory** to `web`.
+  Add `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`
+  as environment variables. Every push deploys automatically, and every
+  branch gets its own preview URL.
+- You get a free `*.vercel.app` address, or connect your own domain (see
+  Email) at no extra cost.
+- **Terms:** Hobby is for non-commercial use. A free student community fits.
+  If the network ever charges money or is run by an organization, move to Pro
+  ($20/month).
+- Uploads must stay under Vercel's 4.5 MB request limit. Avatars are capped
+  at 4 MB, and `next.config.ts` allows 4.5 MB.
+- Alternatives if Vercel's terms ever don't fit: Netlify free, or Cloudflare
+  Workers with OpenNext (more setup).
+
+### Database and storage: Supabase Free
+
+- Limits: 50,000 monthly active users, a 500 MB database, and about 1 GB of
+  file storage. Avatars are re-encoded to roughly 30–60 KB each, so 400
+  members use about 25 MB.
+- **Pausing is the real risk.** A free project pauses after 7 days with no
+  activity, which is likely over winter or summer break, and a long-paused
+  project can be deleted. That's what happened to the 1.x database.
+  - Add a daily keep-alive: a Vercel Cron Job (free on Hobby) that calls a
+    tiny route doing one cheap query.
+  - Add weekly backups: a GitHub Action that runs `pg_dump` and keeps the file
+    as a private artifact. The free tier has no downloadable backups.
+
+### Email: free plan for auth emails
+
+Auth emails are sign-up confirmations, password resets and email changes.
+For 400 members that's roughly 400–600 emails at launch, then a handful a
+week.
+
+| Option | Free limit | Needs a domain? | Verdict |
+| --- | --- | --- | --- |
+| **Resend** | 3,000/month, **100/day** | Yes | **Recommended.** Best deliverability; one SMTP form in Supabase. |
+| Gmail SMTP + app password | ~500/day | No | Fine for a beta. Emails come from a gmail.com address and land in spam more often. |
+| Brevo | 300/day | Effectively yes | Sending from a free-mail address fails modern DMARC checks. |
+| Supabase built-in | Org members only, a few per hour | No | Development only. |
+
+**The domain:** Resend needs a domain you own. The GitHub Student
+Developer Pack has offered a free one-year domain to verified students;
+check the current offer with your `ncat.edu` email. Otherwise a `.com` or
+`.org` costs about $10–15 a year, the only cost in this whole setup. The
+same domain then becomes the site's address, for example `aggieconnect.org`
+instead of `*.vercel.app`.
+
+**Launch-day trap:** Resend's free tier sends **100 emails a day**. If all
+400 people sign up on day one, about 300 won't get a confirmation email
+until the next day. Either invite in waves of about 80 a day, or use Gmail
+SMTP (500/day) for launch week and switch to Resend afterward.
+
+**Setup steps:**
+1. Get the domain and add it in Resend → Domains. Add the SPF, DKIM and DMARC
+   DNS records it shows, and wait for "Verified".
+2. Create a Resend API key with "sending access" only.
+3. In Supabase → Authentication → Emails → SMTP Settings, enter: host
+   `smtp.resend.com`, port `465`, username `resend`, the API key as the
+   password, and a sender like `Aggie Connect <no-reply@your-domain>`.
+4. In Supabase → Authentication → Rate Limits, raise "emails per hour"
+   from the default (about 30) to around 100.
+5. Brand the email templates (confirm signup, reset password, change email)
+   in Aggie Blue and Gold, and keep the `token_hash` confirmation link.
+6. Send yourself a test sign-up and a password reset, check that both arrive
+   in the inbox (not spam), and check that the links work on the production
+   domain.
+
 ## Before inviting real users
 
 Reminders for things deliberately skipped during development:
@@ -219,8 +293,9 @@ Reminders for things deliberately skipped during development:
 - [ ] **Custom SMTP for auth emails.** Supabase's built-in sender only
       delivers to members of your Supabase organization, and only a few emails
       an hour. Real users won't get confirmation emails until this is set up.
-      Recommended: Resend (free tier, needs a domain you own) through
-      Supabase → Authentication → Emails → SMTP Settings.
+      See "Email: free plan for auth emails" above.
+- [ ] Deploy to Vercel (root directory `web`), and add the keep-alive cron and
+      the weekly backup.
 - [ ] Rotate the LinkedIn client secret, and purge `server/.env` and `dbpass`
       from git history.
 - [ ] Set the Supabase Site URL and redirect URLs to the production domain.

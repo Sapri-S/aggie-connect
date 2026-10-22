@@ -36,6 +36,42 @@ export function Field({
   );
 }
 
+export function TextArea({
+  label,
+  name,
+  errors,
+  hint,
+  ...textarea
+}: {
+  label: string;
+  name: string;
+  errors?: string[];
+  hint?: ReactNode;
+} & ComponentProps<"textarea">) {
+  const id = `field-${name}`;
+  return (
+    <div>
+      <label htmlFor={id} className="block text-sm font-semibold">
+        {label}
+      </label>
+      <textarea
+        id={id}
+        name={name}
+        aria-invalid={errors ? true : undefined}
+        aria-describedby={errors ? `${id}-error` : undefined}
+        className="mt-1 w-full rounded-md border border-line bg-surface px-3 py-2 text-ink placeholder:text-muted focus:border-primary focus:outline-none"
+        {...textarea}
+      />
+      {hint && !errors && <p className="mt-1 text-xs text-muted">{hint}</p>}
+      {errors && (
+        <p id={`${id}-error`} className="mt-1 text-sm text-danger">
+          {errors[0]}
+        </p>
+      )}
+    </div>
+  );
+}
+
 export function SubmitButton({
   pending,
   children,
