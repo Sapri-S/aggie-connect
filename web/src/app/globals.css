@@ -1,0 +1,66 @@
+@import "tailwindcss";
+
+/* Aggie Connect design tokens. Aggie Maroon is #500000 (Pantone 7421). */
+:root {
+  --maroon: #500000;
+  --maroon-hover: #732f2f;
+  --maroon-tint: #f7eded;
+  --on-maroon: #ffffff;
+  --surface: #ffffff;
+  --canvas: #f6f4f2;
+  --ink: #1f1a1a;
+  --muted: #6b6262;
+  --line: #e7e1de;
+  --danger: #b42318;
+  --success: #1e6b3a;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --maroon: #b04a4a;
+    --maroon-hover: #c66262;
+    --maroon-tint: #2a1414;
+    --on-maroon: #ffffff;
+    --surface: #181313;
+    --canvas: #0f0b0b;
+    --ink: #f2ecec;
+    --muted: #a89e9e;
+    --line: #2e2626;
+    --danger: #f97066;
+    --success: #6fcf97;
+  }
+}
+
+@theme inline {
+  /* Brand surfaces (hero, banners) stay true Aggie Maroon in both themes. */
+  --color-brand: #500000;
+  --color-maroon: var(--maroon);
+  --color-maroon-hover: var(--maroon-hover);
+  --color-maroon-tint: var(--maroon-tint);
+  --color-on-maroon: var(--on-maroon);
+  --color-surface: var(--surface);
+  --color-canvas: var(--canvas);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-danger: var(--danger);
+  --color-success: var(--success);
+  --font-sans: var(--font-open-sans);
+  --font-heading: var(--font-montserrat);
+}
+
+body {
+  background: var(--canvas);
+  color: var(--ink);
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-montserrat);
+}
+
+:focus-visible {
+  outline: 2px solid var(--maroon);
+  outline-offset: 2px;
+}
