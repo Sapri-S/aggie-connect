@@ -16,7 +16,7 @@ const openSans = Open_Sans({
 
 export const metadata: Metadata = {
   title: { default: "Aggie Connect", template: "%s · Aggie Connect" },
-  description: "Where current and former Aggies find each other.",
+  description: "Where NC A&T students and alumni find each other.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
@@ -31,8 +31,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         </Suspense>
         <main className="flex-1">{children}</main>
         <footer className="border-t border-line py-6 text-center text-sm text-muted">
-          Aggie Connect is a student project and is not affiliated with Texas
-          A&amp;M University or The Association of Former Students.
+          Aggie Connect is a student project and is not affiliated with or
+          endorsed by North Carolina A&amp;T State University or its alumni
+          association.
         </footer>
       </body>
     </html>

@@ -7,8 +7,9 @@ export const loginSchema = z.object({
   password: z.string().min(1, "Enter your password."),
 });
 
-export const signupSchema = z
-  .object({
+// Any email can sign up. Whether an account is approved automatically is
+// decided in the database (public.is_school_email), not here.
+export const signupSchema = z.object({
     firstName: z.string().trim().min(1, "First name is required.").max(50),
     lastName: z.string().trim().min(1, "Last name is required.").max(50),
     email: z.string().trim().toLowerCase().email("Enter a valid email."),
@@ -16,18 +17,14 @@ export const signupSchema = z
       .string()
       .min(10, "Use at least 10 characters.")
       .max(72, "Use 72 characters or fewer."),
-    role: z.enum(["student", "former_student"], {
-      message: "Choose student or former student.",
+    role: z.enum(["student", "alumni"], {
+      message: "Choose student or alumni.",
     }),
     classYear: z.coerce
       .number()
       .int()
-      .min(1876, "Texas A&M opened in 1876.")
+      .min(1891, "NC A&T was founded in 1891.")
       .max(CURRENT_YEAR + 6, "Enter your expected graduation year."),
-  })
-  .refine((v) => v.role !== "student" || v.email.endsWith("@tamu.edu"), {
-    message: "Current students sign up with their @tamu.edu email.",
-    path: ["email"],
   });
 
 // Only https LinkedIn profile URLs. The database enforces the same rule.

@@ -11,7 +11,7 @@ const NOTICES: Record<string, string> = {
 
 export default function LoginPage({ searchParams }: PageProps<"/login">) {
   return (
-    <AuthCard title="Howdy! Sign in">
+    <AuthCard title="Welcome back, Aggie">
       <Suspense fallback={<LoginForm />}>
         <LoginFormWithParams searchParams={searchParams} />
       </Suspense>

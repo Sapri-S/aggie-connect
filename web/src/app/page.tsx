@@ -3,15 +3,15 @@ import Link from "next/link";
 const FEATURES = [
   {
     title: "Find a mentor",
-    body: "Get matched with former students in the field you're aiming for, and see why each match fits.",
+    body: "Get matched with A&T alumni in the field you're aiming for, and see why each match fits.",
   },
   {
     title: "Hiring Aggies",
-    body: "Jobs posted by former students who want to hire Ags, with referral requests built in.",
+    body: "Jobs posted by alumni who want to hire Aggies, with referral requests built in.",
   },
   {
     title: "Your class, your city",
-    body: "Search by class year, major, industry or city. See which Aggies are near you.",
+    body: "Search by class year, major, industry or city. Find Aggies in Greensboro, Charlotte, Atlanta, D.C. and beyond.",
   },
 ];
 
@@ -19,22 +19,22 @@ const FEATURES = [
 export default function Landing() {
   return (
     <div>
-      <section className="bg-brand text-white">
+      <section className="border-b-4 border-gold bg-brand text-white">
         <div className="mx-auto max-w-6xl px-4 py-20 sm:py-28">
-          <p className="text-sm font-semibold uppercase tracking-widest opacity-80">
-            Howdy, Ags
+          <p className="text-sm font-bold uppercase tracking-widest text-gold">
+            Aggie Pride!
           </p>
           <h1 className="mt-3 max-w-2xl text-4xl font-extrabold leading-tight sm:text-5xl">
-            Every Aggie, one handshake away.
+            Every Aggie, one connection away.
           </h1>
           <p className="mt-5 max-w-xl text-lg opacity-90">
-            Current students and former students, connected by class year,
-            career and the Spirit of Aggieland.
+            Students and alumni of North Carolina A&amp;T, connected by class
+            year, career and the city you call home.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <Link
               href="/signup"
-              className="rounded-md bg-white px-5 py-2.5 font-semibold text-brand hover:bg-white/90"
+              className="rounded-md bg-gold px-5 py-2.5 font-semibold text-on-gold hover:brightness-95"
             >
               Join Aggie Connect
             </Link>
@@ -52,7 +52,7 @@ export default function Landing() {
         {FEATURES.map((f) => (
           <div
             key={f.title}
-            className="rounded-xl border border-line bg-surface p-6"
+            className="rounded-xl border border-line border-t-4 border-t-gold bg-surface p-6"
           >
             <h2 className="text-lg font-bold">{f.title}</h2>
             <p className="mt-2 text-muted">{f.body}</p>

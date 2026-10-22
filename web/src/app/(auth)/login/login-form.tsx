@@ -33,7 +33,7 @@ export function LoginForm({ next, notice }: { next?: string; notice?: string }) 
       <SubmitButton pending={pending}>Sign in</SubmitButton>
       <p className="text-center text-sm text-muted">
         New here?{" "}
-        <Link href="/signup" className="font-semibold text-maroon hover:underline">
+        <Link href="/signup" className="font-semibold text-primary hover:underline">
           Join Aggie Connect
         </Link>
       </p>

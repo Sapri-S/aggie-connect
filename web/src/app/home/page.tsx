@@ -43,9 +43,9 @@ async function Home() {
   return (
     <div className="mx-auto grid max-w-6xl gap-6 px-4 py-8 lg:grid-cols-[280px_1fr]">
       <aside className="h-fit overflow-hidden rounded-xl border border-line bg-surface">
-        <div className="h-16 bg-brand" />
+        <div className="h-16 border-b-4 border-gold bg-brand" />
         <div className="px-5 pb-5">
-          <div className="-mt-8 flex h-16 w-16 items-center justify-center rounded-full border-4 border-surface bg-maroon-tint font-heading text-xl font-bold text-maroon">
+          <div className="-mt-8 flex h-16 w-16 items-center justify-center rounded-full border-4 border-surface bg-primary-tint font-heading text-xl font-bold text-primary">
             {me?.first_name?.[0]}
             {me?.last_name?.[0]}
           </div>
@@ -54,12 +54,12 @@ async function Home() {
           </p>
           <div className="mt-1 flex flex-wrap gap-1.5 text-xs">
             {me?.class_year && (
-              <span className="rounded-full bg-maroon px-2 py-0.5 font-semibold text-on-maroon">
+              <span className="rounded-full bg-gold px-2 py-0.5 font-semibold text-on-gold">
                 Class of {shortYear(me.class_year)}
               </span>
             )}
             <span className="rounded-full border border-line px-2 py-0.5 text-muted">
-              {me?.role === "former_student" ? "Former student" : me?.role === "admin" ? "Admin" : "Student"}
+              {me?.role === "alumni" ? "Alumni" : me?.role === "admin" ? "Admin" : "Student"}
             </span>
           </div>
         </div>
@@ -67,16 +67,16 @@ async function Home() {
 
       <section className="space-y-6">
         <div>
-          <h1 className="text-2xl font-extrabold">Howdy, {me?.first_name ?? "Ag"}!</h1>
+          <h1 className="text-2xl font-extrabold">Aggie Pride, {me?.first_name ?? "Aggie"}!</h1>
           {me?.status === "pending" && (
-            <p className="mt-3 rounded-md border border-line bg-maroon-tint px-4 py-3 text-sm">
-              Your account is waiting for approval. Former students are reviewed
+            <p className="mt-3 rounded-md border border-line bg-primary-tint px-4 py-3 text-sm">
+              Your account is waiting for approval. Alumni are reviewed
               by an admin before they can see the directory. We&apos;ll let you in
               as soon as you&apos;re verified.
             </p>
           )}
           {me?.status === "suspended" && (
-            <p className="mt-3 rounded-md border border-line bg-maroon-tint px-4 py-3 text-sm text-danger">
+            <p className="mt-3 rounded-md border border-line bg-primary-tint px-4 py-3 text-sm text-danger">
               Your account is suspended. Contact an admin.
             </p>
           )}
@@ -91,7 +91,7 @@ async function Home() {
                   <li key={a.id} className="rounded-lg border border-line p-3">
                     <p className="font-semibold">
                       {a.first_name} {a.last_name}{" "}
-                      <span className="text-maroon">{shortYear(a.class_year)}</span>
+                      <span className="text-primary">{shortYear(a.class_year)}</span>
                     </p>
                     <p className="text-sm text-muted">
                       {[a.headline, a.city].filter(Boolean).join(" · ") || "New to Aggie Connect"}
@@ -101,7 +101,7 @@ async function Home() {
               </ul>
             ) : (
               <p className="mt-2 text-sm text-muted">
-                You&apos;re one of the first. Invite your fellow Ags!
+                You&apos;re one of the first. Invite your fellow Aggies!
               </p>
             )}
           </div>

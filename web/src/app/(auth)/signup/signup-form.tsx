@@ -8,7 +8,7 @@ import type { FormState } from "@/lib/validation";
 
 export function SignupForm() {
   const [state, action, pending] = useActionState<FormState, FormData>(signUp, {});
-  const [role, setRole] = useState<"student" | "former_student">("student");
+  const [role, setRole] = useState<"student" | "alumni">("student");
 
   if (state.success) {
     return <FormMessage success={state.success} />;
@@ -24,15 +24,15 @@ export function SignupForm() {
           {(
             [
               ["student", "Current student"],
-              ["former_student", "Former student"],
+              ["alumni", "Alumni"],
             ] as const
           ).map(([value, label]) => (
             <label
               key={value}
               className={`cursor-pointer rounded-md border px-3 py-2 text-center text-sm font-semibold ${
                 role === value
-                  ? "border-maroon bg-maroon-tint text-maroon"
-                  : "border-line text-muted hover:border-maroon"
+                  ? "border-primary bg-primary-tint text-primary"
+                  : "border-line text-muted hover:border-primary"
               }`}
             >
               <input
@@ -68,18 +68,17 @@ export function SignupForm() {
         />
       </div>
       <Field
-        label={role === "student" ? "TAMU email" : "Email"}
+        label="Email"
         name="email"
         type="email"
         autoComplete="email"
-        placeholder={role === "student" ? "netid@tamu.edu" : undefined}
         defaultValue={state.values?.email}
         required
         errors={state.fieldErrors?.email}
         hint={
-          role === "former_student"
-            ? "Former students are reviewed by an admin before joining the directory."
-            : undefined
+          role === "student"
+            ? "Use your school email to be approved right away. Other emails are reviewed by an admin."
+            : "Alumni are reviewed by an admin before joining the directory."
         }
       />
       <Field
@@ -105,7 +104,7 @@ export function SignupForm() {
       <SubmitButton pending={pending}>Create account</SubmitButton>
       <p className="text-center text-sm text-muted">
         Already a member?{" "}
-        <Link href="/login" className="font-semibold text-maroon hover:underline">
+        <Link href="/login" className="font-semibold text-primary hover:underline">
           Sign in
         </Link>
       </p>

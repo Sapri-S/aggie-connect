@@ -23,7 +23,7 @@ export function Field({
         name={name}
         aria-invalid={errors ? true : undefined}
         aria-describedby={errors ? `${id}-error` : undefined}
-        className="mt-1 w-full rounded-md border border-line bg-surface px-3 py-2 text-ink placeholder:text-muted focus:border-maroon focus:outline-none"
+        className="mt-1 w-full rounded-md border border-line bg-surface px-3 py-2 text-ink placeholder:text-muted focus:border-primary focus:outline-none"
         {...input}
       />
       {hint && !errors && <p className="mt-1 text-xs text-muted">{hint}</p>}
@@ -47,7 +47,7 @@ export function SubmitButton({
     <button
       type="submit"
       disabled={pending}
-      className="w-full rounded-md bg-maroon px-4 py-2.5 font-semibold text-on-maroon hover:bg-maroon-hover disabled:opacity-60"
+      className="w-full rounded-md bg-primary px-4 py-2.5 font-semibold text-on-primary hover:bg-primary-hover disabled:opacity-60"
     >
       {pending ? "One moment…" : children}
     </button>
@@ -57,14 +57,14 @@ export function SubmitButton({
 export function FormMessage({ error, success }: { error?: string; success?: string }) {
   if (error) {
     return (
-      <p role="alert" className="rounded-md bg-maroon-tint px-3 py-2 text-sm text-danger">
+      <p role="alert" className="rounded-md bg-primary-tint px-3 py-2 text-sm text-danger">
         {error}
       </p>
     );
   }
   if (success) {
     return (
-      <p role="status" className="rounded-md bg-maroon-tint px-3 py-2 text-sm text-success">
+      <p role="status" className="rounded-md bg-primary-tint px-3 py-2 text-sm text-success">
         {success}
       </p>
     );

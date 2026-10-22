@@ -1,43 +1,52 @@
 @import "tailwindcss";
 
-/* Aggie Connect design tokens. Aggie Maroon is #500000 (Pantone 7421). */
+/* Aggie Connect design tokens, from NC A&T's palette:
+   Aggie Blue #004684 (PMS 288) and Aggie Gold #FDB927 (PMS 123). */
 :root {
-  --maroon: #500000;
-  --maroon-hover: #732f2f;
-  --maroon-tint: #f7eded;
-  --on-maroon: #ffffff;
+  --primary: #004684;
+  --primary-hover: #003563;
+  --primary-tint: #e8f0f8;
+  --on-primary: #ffffff;
+  --gold: #fdb927;
+  --on-gold: #0b2440;
   --surface: #ffffff;
-  --canvas: #f6f4f2;
-  --ink: #1f1a1a;
-  --muted: #6b6262;
-  --line: #e7e1de;
+  --canvas: #f4f6f9;
+  --ink: #14202e;
+  --muted: #5b6675;
+  --line: #dde3ea;
   --danger: #b42318;
   --success: #1e6b3a;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --maroon: #b04a4a;
-    --maroon-hover: #c66262;
-    --maroon-tint: #2a1414;
-    --on-maroon: #ffffff;
-    --surface: #181313;
-    --canvas: #0f0b0b;
-    --ink: #f2ecec;
-    --muted: #a89e9e;
-    --line: #2e2626;
+    /* Aggie Blue is too dark to read on a dark background, so interactive
+       elements use a lighter blue with dark text on top. */
+    --primary: #6ea8e0;
+    --primary-hover: #8dbbe8;
+    --primary-tint: #12233a;
+    --on-primary: #0b1a2a;
+    --gold: #fdb927;
+    --on-gold: #0b2440;
+    --surface: #121a24;
+    --canvas: #0b1118;
+    --ink: #e8eef5;
+    --muted: #9aa7b6;
+    --line: #243142;
     --danger: #f97066;
     --success: #6fcf97;
   }
 }
 
 @theme inline {
-  /* Brand surfaces (hero, banners) stay true Aggie Maroon in both themes. */
-  --color-brand: #500000;
-  --color-maroon: var(--maroon);
-  --color-maroon-hover: var(--maroon-hover);
-  --color-maroon-tint: var(--maroon-tint);
-  --color-on-maroon: var(--on-maroon);
+  /* Brand surfaces (hero, banners) stay true Aggie Blue in both themes. */
+  --color-brand: #004684;
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-tint: var(--primary-tint);
+  --color-on-primary: var(--on-primary);
+  --color-gold: var(--gold);
+  --color-on-gold: var(--on-gold);
   --color-surface: var(--surface);
   --color-canvas: var(--canvas);
   --color-ink: var(--ink);
@@ -61,6 +70,6 @@ h3 {
 }
 
 :focus-visible {
-  outline: 2px solid var(--maroon);
+  outline: 2px solid var(--primary);
   outline-offset: 2px;
 }

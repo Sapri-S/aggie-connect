@@ -11,9 +11,14 @@ Next.js 16 + Supabase. See `../docs/PLAN-2.0.md` for the full plan.
 
    Never put the secret/service-role key in this app.
 
-2. **Database.** Open Supabase → SQL Editor, paste
-   `supabase/migrations/20261022000000_init.sql`, and run it once. You can
-   also use the CLI: `npx supabase link --project-ref <ref>`, then `npx supabase db push`.
+2. **Database.** Open Supabase → SQL Editor and run each file in
+   `supabase/migrations/` once, oldest first:
+   1. `20261022000000_init.sql`
+   2. `20261022010000_any_email_signup.sql`
+   3. `20261022020000_nc_at.sql`
+
+   You can also use the CLI: `npx supabase link --project-ref <ref>`, then
+   `npx supabase db push`.
 
 3. **Auth settings** (Supabase → Authentication):
    - **Sign In / Providers → Email:** keep "Confirm email" **on**.
@@ -41,8 +46,11 @@ Next.js 16 + Supabase. See `../docs/PLAN-2.0.md` for the full plan.
 
 ## How access works
 
-- Students who confirm an `@tamu.edu` email are approved automatically.
-- Former students stay **pending** until an admin approves them.
+- Anyone can sign up with any email.
+- Students who confirm an `ncat.edu` or `aggies.ncat.edu` email are approved
+  automatically. The domain list is in `public.is_school_email()`.
+- Alumni, and students who use another email, stay **pending** until an admin
+  approves them.
 - Row Level Security in the database decides what each user can read or
   write. Pending users see only their own profile. Profiles never contain
   emails. Users can't change their own `role` or `status`.
