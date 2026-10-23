@@ -53,35 +53,44 @@ async function Home() {
     [p.job_title, p.company].filter(Boolean).join(" at ");
 
   return (
-    <div className="mx-auto grid max-w-6xl gap-6 px-4 py-8 lg:grid-cols-[280px_1fr]">
-      <aside className="h-fit overflow-hidden rounded-xl border border-line bg-surface">
-        <div className="h-16 border-b-4 border-gold bg-brand" />
-        <div className="px-5 pb-5">
+    <div className="mx-auto grid max-w-6xl grid-cols-1 gap-4 px-4 py-4 sm:gap-6 sm:py-8 lg:grid-cols-[280px_1fr]">
+      {/* Phones: a compact row (avatar, name, class, Edit). Desktop: a card
+          with the blue-and-gold banner. */}
+      <aside className="h-fit overflow-hidden rounded-xl border border-line border-l-4 border-l-gold bg-surface lg:border-l lg:border-l-line">
+        <div className="hidden h-16 border-b-4 border-gold bg-brand lg:block" />
+        <div className="relative flex items-center gap-3 p-3 lg:static lg:block lg:px-5 lg:pt-0 lg:pb-5">
           <Avatar
             url={me?.avatar_path ? urls.get(me.avatar_path) : null}
             firstName={me?.first_name}
             lastName={me?.last_name}
-            className="-mt-8 border-4 border-surface"
+            className="lg:-mt-8 lg:border-4 lg:border-surface"
           />
-          <Link href={`/u/${user.id}`} className="mt-2 block font-heading text-lg font-bold hover:underline">
-            {me?.first_name} {me?.last_name}
-          </Link>
-          {me && work(me) && <p className="text-sm text-muted">{work(me)}</p>}
-          <div className="mt-1 flex flex-wrap gap-1.5 text-xs">
-            {me?.class_year && (
-              <span className="rounded-full bg-gold px-2 py-0.5 font-semibold text-on-gold">
-                Class of {shortYear(me.class_year)}
+          <div className="min-w-0 flex-1">
+            <Link
+              href={`/u/${user.id}`}
+              className="block truncate font-heading font-bold after:absolute after:inset-0 hover:underline lg:mt-2 lg:text-lg lg:after:hidden"
+            >
+              {me?.first_name} {me?.last_name}
+            </Link>
+            {me && work(me) && <p className="truncate text-sm text-muted">{work(me)}</p>}
+            <div className="mt-1 flex flex-wrap gap-1.5 text-xs">
+              {me?.class_year && (
+                <span className="rounded-full bg-gold px-2 py-0.5 font-semibold text-on-gold">
+                  Class of {shortYear(me.class_year)}
+                </span>
+              )}
+              <span className="rounded-full border border-line px-2 py-0.5 text-muted">
+                {me?.role === "alumni" ? "Alumni" : me?.role === "admin" ? "Admin" : "Student"}
               </span>
-            )}
-            <span className="rounded-full border border-line px-2 py-0.5 text-muted">
-              {me?.role === "alumni" ? "Alumni" : me?.role === "admin" ? "Admin" : "Student"}
-            </span>
+            </div>
           </div>
           <Link
             href="/profile/edit"
-            className="mt-4 block rounded-md border border-line px-3 py-1.5 text-center text-sm font-semibold hover:bg-primary-tint"
+            aria-label="Edit profile"
+            className="relative inline-flex min-h-11 shrink-0 items-center justify-center rounded-md border border-line px-3 text-sm font-semibold hover:bg-primary-tint lg:mt-4 lg:flex lg:min-h-0 lg:py-1.5"
           >
-            Edit profile
+            <span className="lg:hidden">Edit</span>
+            <span className="hidden lg:inline">Edit profile</span>
           </Link>
         </div>
       </aside>
@@ -115,10 +124,10 @@ async function Home() {
         </div>
 
         {me?.status === "approved" && (
-          <div className="rounded-xl border border-line bg-surface p-5">
+          <div className="rounded-xl border border-line bg-surface p-4 sm:p-5">
             <h2 className="font-bold">Newest Aggies</h2>
             {aggies && aggies.length > 0 ? (
-              <ul className="mt-3 grid gap-3 sm:grid-cols-2">
+              <ul className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
                 {aggies.map((a) => (
                   <li key={a.id}>
                     <Link

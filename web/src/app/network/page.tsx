@@ -22,7 +22,7 @@ type Person = {
 
 export default function NetworkPage() {
   return (
-    <div className="mx-auto max-w-3xl px-4 py-8">
+    <div className="mx-auto max-w-3xl px-4 py-6 sm:py-8">
       <Suspense fallback={<p className="text-muted">Loading…</p>}>
         <Network />
       </Suspense>
@@ -64,8 +64,14 @@ async function Network() {
   function Row({ person, state }: { person: Person | undefined; state: ConnectState }) {
     if (!person) return null;
     const work = [person.job_title, person.company].filter(Boolean).join(" at ");
+    // A "Connected" badge fits beside the name; buttons go under it on phones.
+    const inline = state.kind === "connected";
     return (
-      <li className="flex flex-col gap-3 py-4 sm:flex-row sm:items-center sm:justify-between">
+      <li
+        className={`flex gap-3 py-4 ${
+          inline ? "items-center justify-between" : "flex-col sm:flex-row sm:items-center sm:justify-between"
+        }`}
+      >
         <Link href={`/u/${person.id}`} className="flex min-w-0 items-center gap-3 hover:underline">
           <Avatar
             url={person.avatar_path ? urls.get(person.avatar_path) : null}
@@ -127,7 +133,7 @@ function Section({
   children: React.ReactNode;
 }) {
   return (
-    <section className="rounded-xl border border-line bg-surface px-5 py-4">
+    <section className="rounded-xl border border-line bg-surface px-4 py-4 sm:px-5">
       <h2 className="font-bold">
         {title} <span className="text-muted">({count})</span>
       </h2>

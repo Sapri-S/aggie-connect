@@ -31,7 +31,10 @@ export function LoginForm({ next, notice }: { next?: string; notice?: string }) 
         errors={state.fieldErrors?.password}
       />
       <div className="-mt-2 text-right">
-        <Link href="/forgot-password" className="text-sm font-semibold text-primary hover:underline">
+        <Link
+          href="/forgot-password"
+          className="inline-flex min-h-11 items-center text-sm font-semibold text-primary hover:underline sm:min-h-0"
+        >
           Forgot password?
         </Link>
       </div>

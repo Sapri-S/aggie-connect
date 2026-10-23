@@ -10,7 +10,7 @@ export const metadata: Metadata = { title: "Admin" };
 
 export default function AdminPage() {
   return (
-    <div className="mx-auto max-w-5xl px-4 py-8">
+    <div className="mx-auto max-w-5xl px-4 py-6 sm:py-8">
       <Suspense fallback={<p className="text-muted">Loading…</p>}>
         <Admin />
       </Suspense>
@@ -54,12 +54,12 @@ async function Admin() {
         ))}
       </div>
 
-      <section className="rounded-xl border border-line bg-surface p-5">
+      <section className="rounded-xl border border-line bg-surface p-4 sm:p-5">
         <h2 className="mb-4 font-bold">Invite someone</h2>
         <InviteForm enabled={createAdminClient() !== null} />
       </section>
 
-      <section className="rounded-xl border border-line bg-surface p-5">
+      <section className="rounded-xl border border-line bg-surface p-4 sm:p-5">
         <h2 className="mb-4 font-bold">Members</h2>
         <MemberList members={members} me={user.id} />
       </section>

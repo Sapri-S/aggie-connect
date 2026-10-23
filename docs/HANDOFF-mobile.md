@@ -116,16 +116,16 @@ npm run dev
 
 ## Done when
 
-- [ ] No horizontal scroll on any page at 375 px.
-- [ ] Signed-in navigation fits and is thumb-reachable: a bottom tab bar on
+- [x] No horizontal scroll on any page at 375 px.
+- [x] Signed-in navigation fits and is thumb-reachable: a bottom tab bar on
       phones, the current header on desktop.
-- [ ] All tap targets are at least 44 px on mobile.
-- [ ] Profile, network and admin rows look intentional at 375 px, including
+- [x] All tap targets are at least 44 px on mobile.
+- [x] Profile, network and admin rows look intentional at 375 px, including
       the Connect states (Connect, Request sent, Accept/Ignore, Connected,
       remove confirm).
-- [ ] Theme color and manifest are added, and the home-screen icon works.
-- [ ] Light and dark mode are both checked, and desktop is unchanged or better.
-- [ ] Lint, typecheck and build pass, the work is on a branch with a PR, and
+- [x] Theme color and manifest are added, and the home-screen icon works.
+- [x] Light and dark mode are both checked, and desktop is unchanged or better.
+- [x] Lint, typecheck and build pass, the work is on a branch with a PR, and
       before/after screenshots are described in the PR.
 
 ## Out of scope

@@ -20,7 +20,7 @@ export default function Landing() {
   return (
     <div>
       <section className="border-b-4 border-gold bg-brand text-white">
-        <div className="mx-auto max-w-6xl px-4 py-20 sm:py-28">
+        <div className="mx-auto max-w-6xl px-4 py-14 sm:py-28">
           <p className="text-sm font-bold uppercase tracking-widest text-gold">
             Aggie Pride!
           </p>
@@ -31,16 +31,16 @@ export default function Landing() {
             Students and alumni of North Carolina A&amp;T, connected by class
             year, career and the city you call home.
           </p>
-          <div className="mt-8 flex flex-wrap gap-3">
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <Link
               href="/signup"
-              className="rounded-md bg-gold px-5 py-2.5 font-semibold text-on-gold hover:brightness-95"
+              className="rounded-md bg-gold px-5 py-2.5 text-center font-semibold text-on-gold hover:brightness-95"
             >
               Join Aggie Connect
             </Link>
             <Link
               href="/login"
-              className="rounded-md border border-white/40 px-5 py-2.5 font-semibold hover:bg-white/10"
+              className="rounded-md border border-white/40 px-5 py-2.5 text-center font-semibold hover:bg-white/10"
             >
               Sign in
             </Link>
@@ -48,7 +48,7 @@ export default function Landing() {
         </div>
       </section>
 
-      <section className="mx-auto grid max-w-6xl gap-4 px-4 py-14 sm:grid-cols-3">
+      <section className="mx-auto grid max-w-6xl gap-4 px-4 py-10 sm:grid-cols-3 sm:py-14">
         {FEATURES.map((f) => (
           <div
             key={f.title}

@@ -58,9 +58,35 @@
   --font-heading: var(--font-montserrat);
 }
 
+/* Safety net: anything wider than the screen is clipped instead of making
+   the whole page wider (which lets phones zoom out and shifts the layout).
+   `clip`, unlike `hidden`, keeps the sticky header working. It's on <html>
+   too, or the browser moves body's value to the window and ignores it. */
+html,
+body {
+  overflow-x: clip;
+}
+
 body {
   background: var(--canvas);
   color: var(--ink);
+}
+
+/* Phones: signed-in pages get a bottom tab bar (components/mobile-tab-bar).
+   Pad the page so the footer and last rows aren't hidden behind it. */
+:root {
+  --tabbar-h: 4rem;
+}
+
+@media (width < 40rem) {
+  body:has(#mobile-tabs) {
+    padding-bottom: calc(var(--tabbar-h) + env(safe-area-inset-bottom));
+  }
+}
+
+/* Sits just above the tab bar, for sticky actions and the "More" menu. */
+@utility bottom-above-tabs {
+  bottom: calc(var(--tabbar-h) + env(safe-area-inset-bottom));
 }
 
 h1,

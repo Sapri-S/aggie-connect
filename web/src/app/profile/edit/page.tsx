@@ -11,7 +11,7 @@ export const metadata: Metadata = { title: "Edit profile" };
 
 export default function EditProfilePage() {
   return (
-    <div className="mx-auto max-w-3xl px-4 py-8">
+    <div className="mx-auto max-w-3xl px-4 py-6 sm:py-8">
       <Suspense fallback={<p className="text-muted">Loading…</p>}>
         <EditProfile />
       </Suspense>
@@ -41,12 +41,15 @@ async function EditProfile() {
     <div className="space-y-6">
       <div className="flex items-center justify-between gap-4">
         <h1 className="text-2xl font-extrabold">Edit your profile</h1>
-        <Link href={`/u/${user.id}`} className="text-sm font-semibold text-primary hover:underline">
+        <Link
+          href={`/u/${user.id}`}
+          className="inline-flex min-h-11 shrink-0 items-center text-sm font-semibold text-primary hover:underline sm:min-h-0"
+        >
           View profile
         </Link>
       </div>
 
-      <section className="rounded-xl border border-line bg-surface p-6">
+      <section className="rounded-xl border border-line bg-surface p-4 sm:p-6">
         <AvatarForm
           url={p.avatar_path ? (urls.get(p.avatar_path) ?? null) : null}
           firstName={p.first_name}
@@ -54,7 +57,7 @@ async function EditProfile() {
         />
       </section>
 
-      <section className="rounded-xl border border-line bg-surface p-6">
+      <section className="rounded-xl border border-line bg-surface p-4 pb-0 sm:p-6">
         <ProfileForm
           initial={{
             firstName: p.first_name ?? "",
