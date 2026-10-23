@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
+import { pendingRequestCount } from "@/lib/connections";
 import { createClient } from "@/lib/supabase/server";
 
 function HeaderFrame({ home, children }: { home: string; children?: ReactNode }) {
@@ -28,22 +29,37 @@ export async function SiteHeader() {
   const {
     data: { user },
   } = await supabase.auth.getUser();
+  const requests = user ? await pendingRequestCount(supabase, user.id) : 0;
 
   return (
     <HeaderFrame home={user ? "/home" : "/"}>
       {user ? (
         <>
-        <Link
-          href={`/u/${user.id}`}
-          className="rounded-md px-3 py-1.5 text-ink hover:bg-primary-tint"
-        >
-          My profile
-        </Link>
-        <form action="/auth/signout" method="post">
-          <button className="rounded-md px-3 py-1.5 text-muted hover:bg-primary-tint hover:text-ink">
-            Sign out
-          </button>
-        </form>
+          <Link
+            href="/network"
+            className="relative rounded-md px-3 py-1.5 text-ink hover:bg-primary-tint"
+          >
+            Network
+            {requests > 0 && (
+              <span
+                aria-label={`${requests} pending invitation${requests === 1 ? "" : "s"}`}
+                className="ml-1 rounded-full bg-gold px-1.5 py-0.5 text-xs font-bold text-on-gold"
+              >
+                {requests}
+              </span>
+            )}
+          </Link>
+          <Link
+            href={`/u/${user.id}`}
+            className="rounded-md px-3 py-1.5 text-ink hover:bg-primary-tint"
+          >
+            Profile
+          </Link>
+          <form action="/auth/signout" method="post">
+            <button className="rounded-md px-3 py-1.5 text-muted hover:bg-primary-tint hover:text-ink">
+              Sign out
+            </button>
+          </form>
         </>
       ) : (
         <>

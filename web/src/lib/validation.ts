@@ -27,6 +27,23 @@ export const signupSchema = z.object({
       .max(CURRENT_YEAR + 6, "Enter your expected graduation year."),
   });
 
+export const forgotPasswordSchema = z.object({
+  email: z.string().trim().toLowerCase().email("Enter a valid email."),
+});
+
+export const newPasswordSchema = z
+  .object({
+    password: z
+      .string()
+      .min(10, "Use at least 10 characters.")
+      .max(72, "Use 72 characters or fewer."),
+    confirm: z.string(),
+  })
+  .refine((v) => v.password === v.confirm, {
+    message: "The passwords don't match.",
+    path: ["confirm"],
+  });
+
 // Only https LinkedIn profile URLs. The database enforces the same rule.
 export const linkedInUrl = z
   .string()

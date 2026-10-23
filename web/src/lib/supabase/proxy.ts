@@ -9,6 +9,7 @@ const PROTECTED_PREFIXES = [
   "/onboarding",
   "/profile",
   "/u/",
+  "/network",
   "/directory",
   "/admin",
 ];

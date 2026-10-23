@@ -30,6 +30,11 @@ export function LoginForm({ next, notice }: { next?: string; notice?: string }) 
         required
         errors={state.fieldErrors?.password}
       />
+      <div className="-mt-2 text-right">
+        <Link href="/forgot-password" className="text-sm font-semibold text-primary hover:underline">
+          Forgot password?
+        </Link>
+      </div>
       <SubmitButton pending={pending}>Sign in</SubmitButton>
       <p className="text-center text-sm text-muted">
         New here?{" "}

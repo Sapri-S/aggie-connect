@@ -3,7 +3,9 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { Suspense } from "react";
 import { Avatar } from "@/components/avatar";
+import { ConnectButton } from "@/components/connect-button";
 import { signAvatarUrls } from "@/lib/avatars";
+import { connectionWith } from "@/lib/connections";
 import { createClient } from "@/lib/supabase/server";
 
 export const metadata: Metadata = { title: "Profile" };
@@ -50,8 +52,11 @@ async function Profile({ params }: Pick<PageProps<"/u/[id]">, "params">) {
   if (error) throw new Error(`Couldn't load profile (${error.code}: ${error.message})`);
   if (!p) notFound();
 
-  const urls = await signAvatarUrls(supabase, [p.avatar_path]);
   const isMe = p.id === user.id;
+  const [urls, connection] = await Promise.all([
+    signAvatarUrls(supabase, [p.avatar_path]),
+    isMe ? null : connectionWith(supabase, user.id, p.id),
+  ]);
   const work = [p.job_title, p.company].filter(Boolean).join(" at ");
 
   return (
@@ -66,13 +71,17 @@ async function Profile({ params }: Pick<PageProps<"/u/[id]">, "params">) {
             size="lg"
             className="border-4 border-surface"
           />
-          {isMe && (
+          {isMe ? (
             <Link
               href="/profile/edit"
               className="rounded-md border border-line px-3 py-1.5 text-sm font-semibold hover:bg-primary-tint"
             >
               Edit profile
             </Link>
+          ) : (
+            connection && (
+              <ConnectButton otherId={p.id} firstName={p.first_name} state={connection} />
+            )
           )}
         </div>
 

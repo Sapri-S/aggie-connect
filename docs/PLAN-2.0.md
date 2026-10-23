@@ -202,7 +202,7 @@ Later migrations add `mentor_profiles`, `mentorships`, `conversations`,
 | --- | --- | --- |
 | **M0 Foundations** | `web/` scaffold, Aggie Blue and Gold tokens, Supabase SSR clients, proxy session refresh, login, signup, email confirmation, sign-out, init migration with RLS | `npm run build` passes. A new user can't read any profile until confirmed and approved. |
 | **M1 Profiles** | Onboarding, profile page, edit profile, avatar upload, admin approvals | Admin approves a pending user. Profile edits can't change `role` or `status`. |
-| **M2 Directory + network** | Faceted search, pagination, connections | Emails never appear in a directory response. |
+| **M2 Directory + network** | Faceted search, pagination, connections. **Done so far:** Connect, Accept, Ignore, Withdraw and Remove on profiles, a My Network page, an invitation badge, and forgot/reset password. | Emails never appear in a directory response. |
 | **M3 Mentorship + messaging** | Matching, intros, 1:1 messages (Realtime) | Messaging only between connections or matched pairs. Report and block work. |
 | **M4 Aggie Pride board, jobs, events** | Feed, Hiring Aggies, events + RSVP | Moderation queue in use. |
 | **M5 Cutover** | Deploy to Vercel, delete `client/` and `server/` | Old code removed, history purged, secret scanning on. |

@@ -29,6 +29,10 @@ Next.js 16 + Supabase. See `../docs/PLAN-2.0.md` for the full plan.
    - **Emails → Confirm signup:** change the link to
      `{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=email`
      so confirmation works even if the link is opened in another browser.
+   - **Emails → Reset password:** change the link to
+     `{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=recovery&next=/reset-password`
+     so the reset link signs the user in and opens the "choose a new
+     password" page.
    - The built-in email sender is heavily rate-limited (a few emails per
      hour). Set up custom SMTP before real users arrive.
 
@@ -52,6 +56,15 @@ students, with jobs, majors and cities. Run it in the SQL Editor so the home
 page has people in it. The accounts can't be signed into, and every bio is
 marked "(Demo profile.)". Remove them before launch with
 `supabase/seed/remove_demo_accounts.sql`.
+
+Demo members can't sign in, so they can't accept connection requests. To
+see what a connection looks like, send them requests and then run
+`supabase/seed/accept_demo_requests.sql`.
+
+## Deploying
+
+Vercel deploys automatically: every push to `main` goes live in about a
+minute. Pushes to other branches get their own preview URL.
 
 ## How access works
 

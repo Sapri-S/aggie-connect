@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { Suspense } from "react";
 import { Avatar } from "@/components/avatar";
 import { signAvatarUrls } from "@/lib/avatars";
+import { pendingRequestCount } from "@/lib/connections";
 import { createClient } from "@/lib/supabase/server";
 
 export const metadata: Metadata = { title: "Home" };
@@ -43,6 +44,7 @@ async function Home() {
     .order("created_at", { ascending: false })
     .limit(6);
 
+  const invitations = await pendingRequestCount(supabase, user.id);
   const urls = await signAvatarUrls(supabase, [
     me?.avatar_path,
     ...(aggies ?? []).map((a) => a.avatar_path),
@@ -98,6 +100,18 @@ async function Home() {
             <p className="mt-3 rounded-md border border-line bg-primary-tint px-4 py-3 text-sm text-danger">
               Your account is suspended. Contact an admin.
             </p>
+          )}
+          {invitations > 0 && (
+            <Link
+              href="/network"
+              className="mt-3 flex items-center justify-between rounded-md border border-gold bg-surface px-4 py-3 text-sm hover:bg-primary-tint"
+            >
+              <span>
+                You have <strong>{invitations}</strong> connection{" "}
+                {invitations === 1 ? "invitation" : "invitations"} waiting.
+              </span>
+              <span className="font-semibold text-primary">Review</span>
+            </Link>
           )}
         </div>
 
