@@ -75,11 +75,7 @@ export function SignupForm() {
         defaultValue={state.values?.email}
         required
         errors={state.fieldErrors?.email}
-        hint={
-          role === "student"
-            ? "Use your school email to be approved right away. Other emails are reviewed by an admin."
-            : "Alumni are reviewed by an admin before joining the directory."
-        }
+        hint="Any email works. You're in as soon as you confirm it."
       />
       <Field
         label="Class year"
