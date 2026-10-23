@@ -26,8 +26,11 @@ const STATUS_STYLE: Record<Member["status"], string> = {
   suspended: "bg-primary-tint text-danger",
 };
 
-const btn =
-  "rounded-md border border-line px-3 py-1.5 text-sm font-semibold hover:bg-primary-tint disabled:opacity-60";
+// Equal-width, 44px buttons on phones and tablets; compact once rows go
+// horizontal at `lg`.
+const size =
+  "inline-flex min-h-11 flex-1 items-center justify-center rounded-md border px-3 text-sm font-semibold disabled:opacity-60 lg:min-h-0 lg:flex-none lg:py-1.5";
+const btn = `${size} border-line hover:bg-primary-tint`;
 
 export function MemberList({ members, me }: { members: Member[]; me: string }) {
   const pendingCount = members.filter((m) => m.status === "pending").length;
@@ -46,7 +49,7 @@ export function MemberList({ members, me }: { members: Member[]; me: string }) {
   return (
     <div>
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex flex-wrap gap-1" role="tablist">
+        <div className="grid grid-cols-2 gap-1 sm:flex sm:flex-wrap" role="tablist">
           {FILTERS.map((f) => {
             const count = f === "all" ? members.length : members.filter((m) => m.status === f).length;
             return (
@@ -55,7 +58,7 @@ export function MemberList({ members, me }: { members: Member[]; me: string }) {
                 role="tab"
                 aria-selected={filter === f}
                 onClick={() => setFilter(f)}
-                className={`rounded-md px-3 py-1.5 text-sm font-semibold capitalize ${
+                className={`min-h-11 rounded-md px-3 text-sm font-semibold capitalize sm:min-h-0 sm:py-1.5 ${
                   filter === f ? "bg-primary text-on-primary" : "text-muted hover:bg-primary-tint hover:text-ink"
                 }`}
               >
@@ -70,7 +73,7 @@ export function MemberList({ members, me }: { members: Member[]; me: string }) {
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Search name or email"
           aria-label="Search members"
-          className="w-full rounded-md border border-line bg-surface px-3 py-1.5 text-sm sm:w-64"
+          className="min-h-11 w-full rounded-md border border-line bg-surface px-3 text-base sm:min-h-0 sm:w-64 sm:py-1.5 sm:text-sm"
         />
       </div>
 
@@ -108,7 +111,7 @@ function MemberRow({ member: m, isMe }: { member: Member; isMe: boolean }) {
     <li className="flex flex-col gap-3 py-4 lg:flex-row lg:items-center lg:justify-between">
       <div className="min-w-0">
         <div className="flex flex-wrap items-center gap-2">
-          <Link href={`/u/${m.id}`} className="font-semibold hover:underline">
+          <Link href={`/u/${m.id}`} className="inline-flex min-h-11 items-center font-semibold hover:underline lg:min-h-0">
             {m.first_name} {m.last_name}
           </Link>
           {m.class_year && <span className="text-sm text-primary">&apos;{String(m.class_year).slice(-2)}</span>}
@@ -119,8 +122,13 @@ function MemberRow({ member: m, isMe }: { member: Member; isMe: boolean }) {
           {m.is_demo && <span className="rounded-full border border-line px-2 py-0.5 text-xs text-muted">demo</span>}
           {isMe && <span className="text-xs text-muted">(you)</span>}
         </div>
-        <p className="truncate text-sm text-muted">
-          {m.email} · joined {joined} · last sign-in {lastSeen}
+        {/* Phones: email on its own line, dates under it. */}
+        <p className="mt-1 text-sm text-muted sm:mt-0 sm:truncate">
+          <span className="block truncate sm:inline">{m.email}</span>
+          <span className="hidden sm:inline"> · </span>
+          <span className="block sm:inline">
+            joined {joined} · last sign-in {lastSeen}
+          </span>
         </p>
         {error && (
           <p role="alert" className="mt-1 text-sm text-danger">
@@ -133,7 +141,7 @@ function MemberRow({ member: m, isMe }: { member: Member; isMe: boolean }) {
         <div className="flex flex-wrap items-center gap-2">
           {confirming ? (
             <>
-              <span className="text-sm text-danger">
+              <span className="basis-full text-sm text-danger lg:basis-auto">
                 Remove {m.first_name} permanently? This deletes their account, profile and connections.
               </span>
               <button className={`${btn} border-danger text-danger`} disabled={pending} onClick={() => run(() => removeMember(m.id))}>
@@ -147,7 +155,7 @@ function MemberRow({ member: m, isMe }: { member: Member; isMe: boolean }) {
             <>
               {m.status !== "approved" && (
                 <button
-                  className="rounded-md bg-primary px-3 py-1.5 text-sm font-semibold text-on-primary hover:bg-primary-hover disabled:opacity-60"
+                  className={`${size} border-transparent bg-primary text-on-primary hover:bg-primary-hover`}
                   disabled={pending}
                   onClick={() => run(() => setMemberStatus(m.id, "approved"))}
                 >

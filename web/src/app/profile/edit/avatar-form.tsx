@@ -50,7 +50,7 @@ export function AvatarForm({
         <div className="flex flex-wrap justify-center gap-2 sm:justify-start">
           <form ref={formRef} action={upload}>
             <label
-              className={`inline-block cursor-pointer rounded-md bg-primary px-4 py-2 text-sm font-semibold text-on-primary hover:bg-primary-hover ${pending ? "pointer-events-none opacity-60" : ""}`}
+              className={`inline-flex min-h-11 cursor-pointer items-center rounded-md bg-primary px-4 text-sm sm:min-h-0 sm:py-2 font-semibold text-on-primary hover:bg-primary-hover ${pending ? "pointer-events-none opacity-60" : ""}`}
             >
               {uploading ? "Uploading…" : url ? "Change photo" : "Add a photo"}
               <input
@@ -67,7 +67,7 @@ export function AvatarForm({
             <form action={remove}>
               <button
                 disabled={pending}
-                className="rounded-md border border-line px-4 py-2 text-sm font-semibold text-muted hover:text-ink disabled:opacity-60"
+                className="inline-flex min-h-11 items-center rounded-md border border-line px-4 text-sm font-semibold text-muted sm:min-h-0 sm:py-2 hover:text-ink disabled:opacity-60"
               >
                 {removing ? "Removing…" : "Remove"}
               </button>

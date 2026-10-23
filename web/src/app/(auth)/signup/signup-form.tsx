@@ -29,7 +29,7 @@ export function SignupForm() {
           ).map(([value, label]) => (
             <label
               key={value}
-              className={`cursor-pointer rounded-md border px-3 py-2 text-center text-sm font-semibold ${
+              className={`flex min-h-11 cursor-pointer items-center justify-center rounded-md border px-3 py-2 text-center text-sm font-semibold ${
                 role === value
                   ? "border-primary bg-primary-tint text-primary"
                   : "border-line text-muted hover:border-primary"
