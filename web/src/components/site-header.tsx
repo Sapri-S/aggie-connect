@@ -64,6 +64,12 @@ export async function SiteHeader() {
         {/* Phones use the bottom tab bar instead. */}
         <nav aria-label="Main" className="hidden items-center gap-2 text-sm sm:flex">
           <Link
+            href="/directory"
+            className="rounded-md px-3 py-1.5 text-ink hover:bg-primary-tint"
+          >
+            Directory
+          </Link>
+          <Link
             href="/network"
             className="relative rounded-md px-3 py-1.5 text-ink hover:bg-primary-tint"
           >

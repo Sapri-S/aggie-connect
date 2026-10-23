@@ -25,8 +25,14 @@ export function MobileTabBar({
       aria-label="Main"
       className="fixed inset-x-0 bottom-0 z-20 border-t border-line bg-surface/95 pb-[env(safe-area-inset-bottom)] backdrop-blur sm:hidden"
     >
-      <ul className="grid h-(--tabbar-h) grid-cols-4">
+      <ul className="grid h-(--tabbar-h) grid-cols-5">
         <Tab href="/home" label="Home" active={pathname === "/home"} icon={<HomeIcon />} />
+        <Tab
+          href="/directory"
+          label="Directory"
+          active={pathname === "/directory"}
+          icon={<SearchIcon />}
+        />
         <Tab
           href="/network"
           label="Network"
@@ -94,7 +100,7 @@ export function MobileTabBar({
 const tabClass = (active: boolean) =>
   `relative flex h-full w-full flex-col items-center justify-center gap-0.5 text-xs font-semibold ${
     active
-      ? "text-primary before:absolute before:inset-x-5 before:top-0 before:h-0.5 before:rounded-b before:bg-gold"
+      ? "text-primary before:absolute before:inset-x-4 before:top-0 before:h-0.5 before:rounded-b before:bg-gold"
       : "text-muted hover:text-ink"
   }`;
 
@@ -145,6 +151,13 @@ const HomeIcon = () => (
   <Icon>
     <path d="M3 10.5 12 3l9 7.5" />
     <path d="M5 9v11h5v-6h4v6h5V9" />
+  </Icon>
+);
+
+const SearchIcon = () => (
+  <Icon>
+    <circle cx="11" cy="11" r="7" />
+    <path d="m20 20-3.5-3.5" />
   </Icon>
 );
 
