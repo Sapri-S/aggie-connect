@@ -17,6 +17,7 @@ Next.js 16 + Supabase. See `../docs/PLAN-2.0.md` for the full plan.
    2. `20261022010000_any_email_signup.sql`
    3. `20261022020000_nc_at.sql`
    4. `20261022030000_profile_fields.sql` (job title, company, avatars bucket)
+   5. `20261023000000_admin.sql` (admin member list and remove)
 
    You can also use the CLI: `npx supabase link --project-ref <ref>`, then
    `npx supabase db push`.
@@ -48,6 +49,28 @@ Next.js 16 + Supabase. See `../docs/PLAN-2.0.md` for the full plan.
    where id = (select id from auth.users where email = 'you@example.com');
    ```
    There's deliberately no way to become an admin from the app.
+
+## Admin page
+
+Admins see an **Admin** link in the header. `/admin` lists every member with
+their email. From there an admin can approve, suspend, reactivate or remove
+members, and invite people by email. Non-admins get a 404.
+
+**Inviting** needs the Supabase **secret key**, because only Supabase Auth
+can send the invite email:
+
+1. In Supabase, go to Project Settings → API Keys, then **Secret keys**, and copy the
+   `sb_secret_…` key (or the legacy `service_role` key).
+2. Add `SUPABASE_SECRET_KEY=...` to `web/.env.local`, and in Vercel under
+   Settings → Environment Variables. **Never** prefix it with
+   `NEXT_PUBLIC_`; it must stay on the server.
+3. In Supabase, go to Authentication → Emails → **Invite user** and change the link to
+   `{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=invite&next=/reset-password`.
+   Admin invites don't use the browser-based (PKCE) flow, so the default link wouldn't work here.
+
+Without the key, everything else on the admin page still works, and the
+invite box explains what's missing. The key is only used in
+`src/lib/supabase/admin.ts`, and only after the caller is checked to be an admin.
 
 ## Demo members
 

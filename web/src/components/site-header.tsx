@@ -29,7 +29,12 @@ export async function SiteHeader() {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  const requests = user ? await pendingRequestCount(supabase, user.id) : 0;
+  const [requests, { data: isAdmin }] = user
+    ? await Promise.all([
+        pendingRequestCount(supabase, user.id),
+        supabase.rpc("is_admin"),
+      ])
+    : [0, { data: false }];
 
   return (
     <HeaderFrame home={user ? "/home" : "/"}>
@@ -55,6 +60,14 @@ export async function SiteHeader() {
           >
             Profile
           </Link>
+          {isAdmin && (
+            <Link
+              href="/admin"
+              className="rounded-md px-3 py-1.5 font-semibold text-primary hover:bg-primary-tint"
+            >
+              Admin
+            </Link>
+          )}
           <form action="/auth/signout" method="post">
             <button className="rounded-md px-3 py-1.5 text-muted hover:bg-primary-tint hover:text-ink">
               Sign out
