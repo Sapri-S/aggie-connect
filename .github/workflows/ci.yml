@@ -1,0 +1,47 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  web:
+    name: web
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: web
+    env:
+      # Placeholders so the build can run. CI never talks to Supabase, and the
+      # real values live only in Vercel and web/.env.local.
+      NEXT_PUBLIC_SUPABASE_URL: https://placeholder.supabase.co
+      NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: sb_publishable_placeholder
+      NEXT_TELEMETRY_DISABLED: "1"
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - run: npm ci
+      - name: Every new table has RLS
+        run: npm run check:rls
+      - run: npm run lint
+      # PageProps and LayoutProps are generated types, so create them first.
+      - run: npx next typegen
+      - run: npx tsc --noEmit
+      - run: npm run build
+      - name: No high or critical advisories in shipped dependencies
+        run: npm audit --omit=dev --audit-level=high

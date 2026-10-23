@@ -36,7 +36,9 @@ export async function SiteHeader() {
   const [requests, { data: isAdmin }] = user
     ? await Promise.all([
         pendingRequestCount(supabase, user.id),
-        supabase.rpc("is_admin"),
+        // Not is_admin(): admins still see the link before two-factor, and
+        // /admin sends them to set it up.
+        supabase.rpc("has_admin_role"),
       ])
     : [0, { data: false }];
 

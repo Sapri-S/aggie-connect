@@ -1,0 +1,22 @@
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /web
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    groups:
+      # next and eslint-config-next are pinned to the same exact version and
+      # must move together. Read the release notes before merging: Next 16
+      # changes APIs between minors.
+      nextjs:
+        patterns: [next, eslint-config-next]
+      # Everything else: minor and patch bumps arrive as one PR a week.
+      web-minor-and-patch:
+        update-types: [minor, patch]
+        exclude-patterns: [next, eslint-config-next]
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
