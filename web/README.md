@@ -45,6 +45,14 @@ Next.js 16 + Supabase. See `../docs/PLAN-2.0.md` for the full plan.
    ```
    There's deliberately no way to become an admin from the app.
 
+## Demo members
+
+`supabase/seed/demo_accounts.sql` adds 14 fictional Aggies: 9 alumni and 5
+students, with jobs, majors and cities. Run it in the SQL Editor so the home
+page has people in it. The accounts can't be signed into, and every bio is
+marked "(Demo profile.)". Remove them before launch with
+`supabase/seed/remove_demo_accounts.sql`.
+
 ## How access works
 
 - Anyone can sign up with any email.

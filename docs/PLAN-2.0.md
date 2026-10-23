@@ -296,6 +296,9 @@ Reminders for things deliberately skipped during development:
       See "Email: free plan for auth emails" above.
 - [ ] Deploy to Vercel (root directory `web`), and add the keep-alive cron and
       the weekly backup.
+- [ ] **Remove the demo members** with
+      `web/supabase/seed/remove_demo_accounts.sql`. Real users shouldn't
+      message people who don't exist (1.x left its fake "bot" accounts in).
 - [ ] Rotate the LinkedIn client secret, and purge `server/.env` and `dbpass`
       from git history.
 - [ ] Set the Supabase Site URL and redirect URLs to the production domain.
