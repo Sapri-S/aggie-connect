@@ -125,7 +125,15 @@ async function Home() {
 
         {me?.status === "approved" && (
           <div className="rounded-xl border border-line bg-surface p-4 sm:p-5">
-            <h2 className="font-bold">Newest Aggies</h2>
+            <div className="flex items-center justify-between gap-3">
+              <h2 className="font-bold">Newest Aggies</h2>
+              <Link
+                href="/directory"
+                className="inline-flex min-h-11 items-center text-sm font-semibold text-primary hover:underline sm:min-h-0"
+              >
+                See everyone
+              </Link>
+            </div>
             {aggies && aggies.length > 0 ? (
               <ul className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
                 {aggies.map((a) => (
