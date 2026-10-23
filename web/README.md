@@ -18,6 +18,7 @@ Next.js 16 + Supabase. See `../docs/PLAN-2.0.md` for the full plan.
    3. `20261022020000_nc_at.sql`
    4. `20261022030000_profile_fields.sql` (job title, company, avatars bucket)
    5. `20261023000000_admin.sql` (admin member list and remove)
+   6. `20261024000000_auto_approve.sql` (approve everyone who confirms their email)
 
    You can also use the CLI: `npx supabase link --project-ref <ref>`, then
    `npx supabase db push`.
@@ -92,10 +93,11 @@ minute. Pushes to other branches get their own preview URL.
 ## How access works
 
 - Anyone can sign up with any email.
-- Students who confirm an `ncat.edu` or `aggies.ncat.edu` email are approved
-  automatically. The domain list is in `public.is_school_email()`.
-- Alumni, and students who use another email, stay **pending** until an admin
-  approves them.
+- Everyone is approved as soon as they confirm their email: students and
+  alumni, school or personal address. Until then they're **pending**.
+- Admins can suspend or remove anyone from `/admin`. To go back to
+  auto-approving only school emails (`public.is_school_email()`), see the
+  comment at the top of `20261024000000_auto_approve.sql`.
 - Row Level Security in the database decides what each user can read or
   write. Pending users see only their own profile. Profiles never contain
   emails. Users can't change their own `role` or `status`.

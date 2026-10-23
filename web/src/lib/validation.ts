@@ -7,8 +7,8 @@ export const loginSchema = z.object({
   password: z.string().min(1, "Enter your password."),
 });
 
-// Any email can sign up. Whether an account is approved automatically is
-// decided in the database (public.is_school_email), not here.
+// Any email can sign up. Approval happens in the database when the email is
+// confirmed (public.handle_email_confirmed), not here.
 export const signupSchema = z.object({
     firstName: z.string().trim().min(1, "First name is required.").max(50),
     lastName: z.string().trim().min(1, "Last name is required.").max(50),

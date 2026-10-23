@@ -91,9 +91,8 @@ async function Home() {
           <h1 className="text-2xl font-extrabold">Aggie Pride, {me?.first_name ?? "Aggie"}!</h1>
           {me?.status === "pending" && (
             <p className="mt-3 rounded-md border border-line bg-primary-tint px-4 py-3 text-sm">
-              Your account is waiting for approval. Alumni are reviewed
-              by an admin before they can see the directory. We&apos;ll let you in
-              as soon as you&apos;re verified.
+              Your account isn&apos;t active yet. Confirm your email, or contact an
+              admin if you already have.
             </p>
           )}
           {me?.status === "suspended" && (

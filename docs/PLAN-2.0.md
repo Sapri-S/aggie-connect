@@ -67,7 +67,7 @@ in 2.0, not a patch.
 | # | 1.x problem | 2.0 answer |
 | --- | --- | --- |
 | S1 | Anyone could register and then read every member's email. `isApproved` was never checked. | `profiles` has no email column; emails stay in `auth.users`, which clients can't read. RLS lets **only verified and approved** users see other profiles. |
-| S2 | No proof a user is an Aggie. | Any email can sign up, and confirmation is required. Students who confirm an `ncat.edu` or `aggies.ncat.edu` address are approved automatically (`public.is_school_email`). Everyone else, including all alumni, waits for admin approval (see Open questions). |
+| S2 | No proof a user is an Aggie. | Any email can sign up, and confirmation is required. For now everyone who confirms their email is approved automatically, and admins suspend or remove anyone who isn't an Aggie. Approving only `ncat.edu` and `aggies.ncat.edu` addresses (`public.is_school_email`) is a one-line change back (see Open questions). |
 | S3 | The first registrant became admin. | `role` is set only by admins or by SQL. RLS blocks users from changing their own `role` or `status`. |
 | S4 | Validation and the login rate limiter were written but never wired in. | Supabase Auth rate-limits sign-in and sign-up. Server Actions validate every input with **zod**. |
 | S5 | `linkedInUrl` was rendered as a link without validation. | zod plus a database `CHECK` constraint allow only `https://(www.)linkedin.com/in/…`. |
@@ -155,7 +155,7 @@ the system setting.
 /login  /signup      Supabase Auth, email confirmation required
 /auth/confirm        Email-link handler
 /onboarding          Role, class year, major, city: completes the profile
-/pending             Shown until an admin approves (alumni, non-school emails)
+/pending             Shown until the email is confirmed
 /home                Feed + identity card + suggestions
 /network             Connections, requests, suggestions
 /directory           Faceted search + map
@@ -307,6 +307,6 @@ Reminders for things deliberately skipped during development:
 
 ## Open questions
 
-1. How are alumni verified? Right now an admin approves each one. Options to make that easier: a lifetime `aggies.ncat.edu` address if A&T gives one to alumni, LinkedIn education, or a class year plus a referral from an approved Aggie.
+1. How are alumni verified? Right now nobody is: everyone who confirms an email is approved, and admins remove bad actors afterwards. Options to make that easier: a lifetime `aggies.ncat.edu` address if A&T gives one to alumni, LinkedIn education, or a class year plus a referral from an approved Aggie.
 2. Portfolio project or real users? Real users raise the bar: privacy policy, data deletion, possibly FERPA questions for student data, and a paid Supabase plan to avoid pausing.
 3. Is official affiliation with NC A&T or its National Alumni Association a goal? That decides whether official marks can be used.
