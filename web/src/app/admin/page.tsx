@@ -25,9 +25,15 @@ async function Admin() {
   } = await supabase.auth.getUser();
   if (!user) redirect("/login?next=/admin");
 
-  // Non-admins get a 404, so the page doesn't advertise that it exists.
+  // is_admin() is only true once the session has passed two-factor (aal2).
+  // Admins without it go set it up or enter a code; everyone else gets a
+  // 404, so the page doesn't advertise that it exists.
   const { data: isAdmin } = await supabase.rpc("is_admin");
-  if (!isAdmin) notFound();
+  if (!isAdmin) {
+    const { data: hasRole } = await supabase.rpc("has_admin_role");
+    if (hasRole) redirect("/admin/mfa");
+    notFound();
+  }
 
   const { data, error } = await supabase.rpc("admin_list_members");
   if (error) throw new Error(`Couldn't load members (${error.code}: ${error.message})`);

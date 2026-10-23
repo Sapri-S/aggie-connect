@@ -19,6 +19,8 @@ Next.js 16 + Supabase. See `../docs/PLAN-2.0.md` for the full plan.
    4. `20261022030000_profile_fields.sql` (job title, company, avatars bucket)
    5. `20261023000000_admin.sql` (admin member list and remove)
    6. `20261024000000_auto_approve.sql` (approve everyone who confirms their email)
+   7. `20261025000000_connection_limits.sql` (caps on connection requests)
+   8. `20261026000000_admin_mfa.sql` (admins need two-factor; see below)
 
    You can also use the CLI: `npx supabase link --project-ref <ref>`, then
    `npx supabase db push`.
@@ -56,6 +58,20 @@ Next.js 16 + Supabase. See `../docs/PLAN-2.0.md` for the full plan.
 Admins see an **Admin** link in the header. `/admin` lists every member with
 their email. From there an admin can approve, suspend, reactivate or remove
 members, and invite people by email. Non-admins get a 404.
+
+**Admins need two-factor authentication.** The first time an admin opens
+`/admin` they're sent to `/admin/mfa` to set up an authenticator app (TOTP),
+and after each sign-in they enter a code there. Until then the database
+treats them as a normal member: `public.is_admin()` requires an `aal2`
+session, so this holds for direct API calls too. TOTP is on by default in
+Supabase → Authentication → Multi-Factor.
+
+Lost the authenticator? Run this in the SQL Editor, then set it up again:
+
+```sql
+delete from auth.mfa_factors
+where user_id = (select id from auth.users where email = 'admin@example.com');
+```
 
 **Inviting** needs the Supabase **secret key**, because only Supabase Auth
 can send the invite email:
