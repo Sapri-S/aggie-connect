@@ -48,6 +48,21 @@ export async function sendConnectionRequest(otherId: string): Promise<ActionResu
       .eq("requester_id", otherId)
       .eq("receiver_id", me);
     if (acceptError) return { error: "Couldn't connect. Try again." };
+  } else if (error?.code === "P0001") {
+    // Over the request limit (see 20261025000000_connection_limits.sql). If
+    // they already asked you, connecting doesn't need a new request.
+    const { data: accepted } = await supabase
+      .from("connections")
+      .update({ status: "accepted" })
+      .eq("requester_id", otherId)
+      .eq("receiver_id", me)
+      .select("id")
+      .maybeSingle();
+    if (!accepted) {
+      return {
+        error: "You've sent a lot of requests lately. Try again tomorrow, or wait for some to be answered.",
+      };
+    }
   } else if (error?.code === "42501") {
     return { error: "You can connect with Aggies once your account is approved." };
   } else if (error) {

@@ -81,11 +81,12 @@ in 2.0, not a patch.
 
 ### Rules that keep it secure
 
-- **The service-role key never reaches the browser** and is not used in request handlers. It's only for admin scripts and migrations. Request handling uses the user's own session, so RLS always applies.
-- **Every table has RLS enabled in the migration that creates it.** No exceptions, and CI fails if one doesn't.
+- **The secret (service-role) key never reaches the browser.** Request handling uses the user's own session, so RLS always applies. The one exception is `inviteMember` in `/admin`, which uses the key after an admin check because only Supabase Auth can send invites.
+- **Every table has RLS enabled in the migration that creates it.** No exceptions, and CI fails if one doesn't (`npm run check:rls` in `.github/workflows/ci.yml`).
 - **Use `supabase.auth.getUser()` (verified with the server) for authorization, never `getSession()`.**
-- Set a CSP header, keep secrets only in `.env.local` and Vercel, and enable GitHub secret scanning with push protection.
-- Optional TOTP 2FA (Supabase MFA), required for admins.
+- Keep secrets only in `.env.local` and Vercel, and keep GitHub secret scanning with push protection on. A CSP is set in `web/next.config.ts`, report-only for now; nonces don't work with Partial Prerendering, so it allows inline scripts.
+- Dependabot watches `web/` and GitHub Actions weekly. Connection requests are capped in the database (30 a day, 100 pending).
+- Optional TOTP 2FA (Supabase MFA), required for admins. **Not built yet.**
 
 ---
 
