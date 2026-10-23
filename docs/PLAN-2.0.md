@@ -86,7 +86,7 @@ in 2.0, not a patch.
 - **Use `supabase.auth.getUser()` (verified with the server) for authorization, never `getSession()`.**
 - Keep secrets only in `.env.local` and Vercel, and keep GitHub secret scanning with push protection on. A CSP is set in `web/next.config.ts`, report-only for now; nonces don't work with Partial Prerendering, so it allows inline scripts.
 - Dependabot watches `web/` and GitHub Actions weekly. Connection requests are capped in the database (30 a day, 100 pending).
-- Optional TOTP 2FA (Supabase MFA), required for admins. **Not built yet.**
+- TOTP 2FA (Supabase MFA) is required for admins: `public.is_admin()` needs an `aal2` session, and admins enrol at `/admin/mfa`. Members have no 2FA option yet.
 
 ---
 
