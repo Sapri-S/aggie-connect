@@ -27,7 +27,7 @@ export function ProfileForm({ initial }: { initial: ProfileValues }) {
     <form action={action} className="space-y-5" noValidate>
       <FormMessage error={state.error} success={state.success} />
 
-      <div className="grid gap-4 sm:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <Field label="First name" name="firstName" autoComplete="given-name" required defaultValue={v("firstName")} errors={e("firstName")} />
         <Field label="Last name" name="lastName" autoComplete="family-name" required defaultValue={v("lastName")} errors={e("lastName")} />
       </div>
@@ -43,13 +43,13 @@ export function ProfileForm({ initial }: { initial: ProfileValues }) {
 
       <fieldset className="space-y-4 rounded-lg border border-line p-4">
         <legend className="px-1 text-sm font-semibold">Where you work now (optional)</legend>
-        <div className="grid gap-4 sm:grid-cols-2">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <Field label="Job title" name="jobTitle" autoComplete="organization-title" placeholder="Software Engineer" maxLength={100} defaultValue={v("jobTitle")} errors={e("jobTitle")} />
           <Field label="Company" name="company" autoComplete="organization" placeholder="Duke Energy" maxLength={100} defaultValue={v("company")} errors={e("company")} />
         </div>
       </fieldset>
 
-      <div className="grid gap-4 sm:grid-cols-3">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         <Field label="Class year" name="classYear" type="number" inputMode="numeric" required defaultValue={v("classYear")} errors={e("classYear")} />
         <Field label="Major" name="major" placeholder="Computer Science" maxLength={80} defaultValue={v("major")} errors={e("major")} />
         <Field label="City" name="city" autoComplete="address-level2" placeholder="Greensboro, NC" maxLength={80} defaultValue={v("city")} errors={e("city")} />

@@ -28,6 +28,9 @@ export const viewport: Viewport = {
   // Lets the bottom tab bar reach the screen edge and pad itself with
   // env(safe-area-inset-bottom) above the iPhone home indicator.
   viewportFit: "cover",
+  // Pinch-zoom in still works (for accessibility); zooming out past the
+  // screen width doesn't, so the layout can't slide off-center.
+  minimumScale: 1,
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

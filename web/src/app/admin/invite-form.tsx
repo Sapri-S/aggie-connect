@@ -24,11 +24,11 @@ export function InviteForm({ enabled }: { enabled: boolean }) {
   return (
     <form action={action} className="space-y-4" noValidate key={state.success}>
       <FormMessage error={state.error} success={state.success} />
-      <div className="grid gap-4 sm:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <Field label="First name" name="firstName" required defaultValue={v("firstName")} errors={state.fieldErrors?.firstName} />
         <Field label="Last name" name="lastName" required defaultValue={v("lastName")} errors={state.fieldErrors?.lastName} />
       </div>
-      <div className="grid gap-4 sm:grid-cols-[1fr_auto_auto]">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-[1fr_auto_auto]">
         <Field label="Email" name="email" type="email" required defaultValue={v("email")} errors={state.fieldErrors?.email} />
         <div>
           <label htmlFor="invite-role" className="block text-sm font-semibold">
