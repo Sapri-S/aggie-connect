@@ -3,6 +3,7 @@
 import { useActionState } from "react";
 import { updateProfile } from "../actions";
 import { Field, FormMessage, SubmitButton, TextArea } from "@/components/form-fields";
+import { OPEN_TO } from "@/lib/site";
 import type { FormState } from "@/lib/validation";
 
 export type ProfileValues = {
@@ -16,12 +17,15 @@ export type ProfileValues = {
   city: string;
   bio: string;
   linkedinUrl: string;
+  // Comma-separated OPEN_TO values, so it echoes like the other fields.
+  openTo: string;
 };
 
 export function ProfileForm({ initial }: { initial: ProfileValues }) {
   const [state, action, pending] = useActionState<FormState, FormData>(updateProfile, {});
   const v = (key: keyof ProfileValues) => state.values?.[key] ?? initial[key];
   const e = (key: keyof ProfileValues) => state.fieldErrors?.[key];
+  const openTo = v("openTo").split(",");
 
   return (
     <form action={action} className="space-y-5" noValidate>
@@ -64,6 +68,27 @@ export function ProfileForm({ initial }: { initial: ProfileValues }) {
         defaultValue={v("linkedinUrl")}
         errors={e("linkedinUrl")}
       />
+
+      <fieldset className="space-y-3 rounded-lg border border-gold p-4">
+        <legend className="px-1 text-sm font-semibold">Open to helping Aggies with (optional)</legend>
+        <p className="text-xs text-muted">
+          Shown on your profile, and members can filter the directory by it.
+        </p>
+        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+          {OPEN_TO.map((o) => (
+            <label key={o.value} className="flex min-h-11 items-center gap-3 rounded-md border border-line px-3 sm:min-h-0 sm:py-2">
+              <input
+                type="checkbox"
+                name="openTo"
+                value={o.value}
+                defaultChecked={openTo.includes(o.value)}
+                className="h-4 w-4 accent-[var(--primary)]"
+              />
+              <span className="text-sm">{o.label}</span>
+            </label>
+          ))}
+        </div>
+      </fieldset>
 
       <TextArea
         label="About"

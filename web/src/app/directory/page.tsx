@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { Suspense } from "react";
 import { Avatar } from "@/components/avatar";
 import { signAvatarUrls } from "@/lib/avatars";
+import { OPEN_TO, type OpenTo } from "@/lib/site";
 import { createClient } from "@/lib/supabase/server";
 
 export const metadata: Metadata = { title: "Directory" };
@@ -19,15 +20,17 @@ const ROLES = [
 // Columns a search term can match.
 const SEARCH_COLUMNS = ["first_name", "last_name", "headline", "job_title", "company", "major", "city"];
 
-type Params = { q: string; role: string; page: number };
+type Params = { q: string; role: string; help: OpenTo | "any" | ""; page: number };
 
 function readParams(raw: Record<string, string | string[] | undefined>): Params {
   const one = (v: string | string[] | undefined) => (Array.isArray(v) ? v[0] : v) ?? "";
   const page = Number.parseInt(one(raw.page), 10);
   const role = one(raw.role);
+  const help = one(raw.help);
   return {
     q: one(raw.q).trim().slice(0, 80),
     role: role === "student" || role === "alumni" ? role : "",
+    help: help === "any" || OPEN_TO.some((o) => o.value === help) ? (help as Params["help"]) : "",
     page: Number.isFinite(page) && page > 1 ? page : 1,
   };
 }
@@ -42,10 +45,11 @@ function searchWords(q: string) {
     .slice(0, 5);
 }
 
-function href({ q, role, page }: Params) {
+function href({ q, role, help, page }: Params) {
   const sp = new URLSearchParams();
   if (q) sp.set("q", q);
   if (role) sp.set("role", role);
+  if (help) sp.set("help", help);
   if (page > 1) sp.set("page", String(page));
   const s = sp.toString();
   return s ? `/directory?${s}` : "/directory";
@@ -73,12 +77,14 @@ async function Directory({ searchParams }: Pick<PageProps<"/directory">, "search
   const filtered = (head: boolean) => {
     let query = supabase
       .from("profiles")
-      .select("id, first_name, last_name, role, class_year, headline, job_title, company, city, avatar_path", {
+      .select("id, first_name, last_name, role, class_year, headline, job_title, company, city, avatar_path, open_to", {
         count: "exact",
         head,
       })
       .neq("id", user.id);
     if (params.role) query = query.eq("role", params.role);
+    if (params.help === "any") query = query.neq("open_to", "{}");
+    else if (params.help) query = query.contains("open_to", [params.help]);
     // Every word has to match at least one column.
     for (const word of searchWords(params.q)) {
       query = query.or(SEARCH_COLUMNS.map((c) => `${c}.ilike.*${word}*`).join(","));
@@ -115,6 +121,7 @@ async function Directory({ searchParams }: Pick<PageProps<"/directory">, "search
 
       <form action="/directory" className="flex gap-2" role="search">
         {params.role && <input type="hidden" name="role" value={params.role} />}
+        {params.help && <input type="hidden" name="help" value={params.help} />}
         <input
           type="search"
           name="q"
@@ -128,6 +135,23 @@ async function Directory({ searchParams }: Pick<PageProps<"/directory">, "search
           Search
         </button>
       </form>
+
+      <nav aria-label="Filter by what they're open to" className="flex flex-wrap gap-2">
+        {[{ value: "" as const, label: "Anyone" }, { value: "any" as const, label: "Open to helping" }, ...OPEN_TO].map((o) => (
+          <Link
+            key={o.value}
+            href={href({ ...params, help: o.value, page: 1 })}
+            aria-current={params.help === o.value ? "page" : undefined}
+            className={`inline-flex min-h-11 items-center rounded-full border px-3 text-sm font-semibold sm:min-h-0 sm:py-1 ${
+              params.help === o.value
+                ? "border-transparent bg-gold text-on-gold"
+                : "border-line text-muted hover:border-gold hover:text-ink"
+            }`}
+          >
+            {o.label}
+          </Link>
+        ))}
+      </nav>
 
       <div className="flex flex-wrap items-center justify-between gap-2">
         <nav aria-label="Filter by role" className="flex gap-1">
@@ -177,6 +201,13 @@ async function Directory({ searchParams }: Pick<PageProps<"/directory">, "search
                     {[work(p) || p.headline, p.city].filter(Boolean).join(" · ") ||
                       (p.role === "alumni" ? "Alumni" : "Student")}
                   </p>
+                  {p.open_to?.length > 0 && (
+                    <p className="mt-1">
+                      <span className="rounded-full bg-gold px-2 py-0.5 text-xs font-semibold text-on-gold">
+                        Open to helping
+                      </span>
+                    </p>
+                  )}
                 </div>
               </Link>
             </li>
@@ -184,7 +215,7 @@ async function Directory({ searchParams }: Pick<PageProps<"/directory">, "search
         </ul>
       ) : (
         <p className="rounded-xl border border-line bg-surface px-4 py-8 text-center text-muted">
-          {params.q || params.role
+          {params.q || params.role || params.help
             ? "No Aggies match that. Try a shorter search or another filter."
             : "Nobody here yet. Bring your Aggie Pride and invite your classmates!"}
         </p>

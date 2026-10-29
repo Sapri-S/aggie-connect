@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useActionState, useState } from "react";
 import { signUp } from "../actions";
+import { ResendConfirmation } from "../resend-confirmation";
 import { Field, FormMessage, SubmitButton } from "@/components/form-fields";
 import type { FormState } from "@/lib/validation";
 
@@ -11,7 +12,16 @@ export function SignupForm() {
   const [role, setRole] = useState<"student" | "alumni">("student");
 
   if (state.success) {
-    return <FormMessage success={state.success} />;
+    return (
+      <div className="space-y-4">
+        <FormMessage success={state.success} />
+        <p className="text-sm text-muted">
+          The link expires after an hour. Check your spam folder if it
+          doesn&apos;t show up in a few minutes.
+        </p>
+        {state.values?.email && <ResendConfirmation email={state.values.email} />}
+      </div>
+    );
   }
 
   return (
@@ -98,6 +108,17 @@ export function SignupForm() {
         errors={state.fieldErrors?.password}
       />
       <SubmitButton pending={pending}>Create account</SubmitButton>
+      <p className="text-center text-xs text-muted">
+        By creating an account you agree to the{" "}
+        <Link href="/guidelines" className="font-semibold text-primary hover:underline">
+          community guidelines
+        </Link>{" "}
+        and{" "}
+        <Link href="/privacy" className="font-semibold text-primary hover:underline">
+          privacy policy
+        </Link>
+        .
+      </p>
       <p className="text-center text-sm text-muted">
         Already a member?{" "}
         <Link href="/login" className="font-semibold text-primary hover:underline">

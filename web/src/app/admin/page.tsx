@@ -5,6 +5,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 import { InviteForm } from "./invite-form";
 import { MemberList, type Member } from "./member-list";
+import { ReportList, type Report } from "./report-list";
 
 export const metadata: Metadata = { title: "Admin" };
 
@@ -35,9 +36,14 @@ async function Admin() {
     notFound();
   }
 
-  const { data, error } = await supabase.rpc("admin_list_members");
+  const [{ data, error }, { data: reportData, error: reportError }] = await Promise.all([
+    supabase.rpc("admin_list_members"),
+    supabase.rpc("admin_list_reports"),
+  ]);
   if (error) throw new Error(`Couldn't load members (${error.code}: ${error.message})`);
+  if (reportError) throw new Error(`Couldn't load reports (${reportError.code}: ${reportError.message})`);
   const members = (data ?? []) as Member[];
+  const reports = (reportData ?? []) as Report[];
 
   const count = (s: Member["status"]) => members.filter((m) => m.status === s).length;
   const stats = [
@@ -59,6 +65,13 @@ async function Admin() {
           </div>
         ))}
       </div>
+
+      <section className="rounded-xl border border-line bg-surface p-4 sm:p-5">
+        <h2 className="mb-4 font-bold">
+          Reports{reports.length > 0 && <span className="ml-2 rounded-full bg-gold px-2 py-0.5 text-sm text-on-gold">{reports.length}</span>}
+        </h2>
+        <ReportList reports={reports} me={user.id} />
+      </section>
 
       <section className="rounded-xl border border-line bg-surface p-4 sm:p-5">
         <h2 className="mb-4 font-bold">Invite someone</h2>

@@ -5,6 +5,7 @@ import { Suspense } from "react";
 import { signAvatarUrls } from "@/lib/avatars";
 import { createClient } from "@/lib/supabase/server";
 import { AvatarForm } from "./avatar-form";
+import { DeleteAccountForm } from "./delete-account-form";
 import { ProfileForm } from "./profile-form";
 
 export const metadata: Metadata = { title: "Edit profile" };
@@ -29,7 +30,7 @@ async function EditProfile() {
   const { data: p, error } = await supabase
     .from("profiles")
     .select(
-      "first_name, last_name, class_year, headline, job_title, company, major, city, bio, linkedin_url, avatar_path",
+      "first_name, last_name, class_year, headline, job_title, company, major, city, bio, linkedin_url, avatar_path, open_to",
     )
     .eq("id", user.id)
     .single();
@@ -70,8 +71,13 @@ async function EditProfile() {
             city: p.city ?? "",
             bio: p.bio ?? "",
             linkedinUrl: p.linkedin_url ?? "",
+            openTo: (p.open_to ?? []).join(","),
           }}
         />
+      </section>
+
+      <section className="rounded-xl border border-line bg-surface p-4 sm:p-6">
+        <DeleteAccountForm />
       </section>
     </div>
   );
