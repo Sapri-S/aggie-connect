@@ -10,15 +10,26 @@ Before you start, read [What it costs](#what-it-costs-for-1000-members).
 
 - [ ] **1. Email sender (custom SMTP).** Without it, nobody outside your
       Supabase team gets a confirmation email, so nobody can sign up.
-      Step by step, with branded templates: **`EMAIL-SETUP.md`**.
+      **Decided 2026-10-29: launch without email** (confirmation off, set up
+      SMTP after launch). Do the "Launch mode: no email" steps in
+      **`EMAIL-SETUP.md`**: turn off Confirm email, and let in anyone stuck.
 - [x] **2. Test signup on production.** Done before 2026-10-29. **Do it
       again after step 1** with an email that isn't on your Supabase team:
       sign up, confirm, reset your password, and make sure the emails land in
       the inbox (not spam).
 - [ ] **3. Signup protection.** Supabase → Authentication → Providers →
       Email: minimum password length **10**, require letters and digits.
-      Attack Protection: turn on **Turnstile CAPTCHA**. (The CAPTCHA also
-      needs a small code change. Ask Claude once the Turnstile keys exist.)
+      **CAPTCHA (important with email off):** the code is in; it turns on
+      with keys. Order matters, or every sign-in fails:
+      1. Cloudflare dashboard (free account) → **Turnstile → Add widget**.
+         Hostnames: `aggie-connect.vercel.app` (and `localhost` for
+         testing). Mode: Managed. Copy the **site key** and **secret key**.
+      2. Vercel → Environment Variables: `NEXT_PUBLIC_TURNSTILE_SITE_KEY` =
+         the site key. **Redeploy**, and check the "I'm human" box shows on
+         `/login` and `/signup`.
+      3. Only then: Supabase → Authentication → **Attack Protection** →
+         enable CAPTCHA, provider Turnstile, paste the **secret key**.
+      4. Sign out and sign in again on production to confirm it works.
 - [ ] **4. Stop bulk scraping.** Settings → API → **Max rows: 100**. Then
       open `/admin` and make sure every member still shows. If the list stops
       at 100, tell Claude so `admin_list_members()` gets paginated.

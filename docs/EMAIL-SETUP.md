@@ -2,6 +2,62 @@
 
 Written 2026-10-29 for launch. This is item 1 in `LAUNCH-CHECKLIST.md`.
 
+> **Decision 2026-10-29: launch without email.** Email confirmation is
+> turned **off** for launch, and SMTP gets set up afterward. See
+> [Launch mode: no email](#launch-mode-no-email) first; the rest of this
+> file is for when email gets turned on.
+
+## Launch mode: no email
+
+New members are signed in and approved the moment they sign up (the
+database already approves anyone whose email is marked confirmed, and
+Supabase marks it confirmed when confirmation is off). The site hides
+everything that sends email until `NEXT_PUBLIC_EMAIL_ENABLED=true`:
+"Forgot password?" becomes "ask an admin", the "send a new link" option
+disappears, and `/admin` invites are replaced by "share the signup link".
+
+**Dashboard steps (do these before launch):**
+
+1. Supabase → Authentication → **Sign In / Providers → Email**: turn
+   **Confirm email** off. Save.
+2. Let in anyone who signed up earlier and is stuck waiting for a
+   confirmation email. In the SQL Editor:
+
+   ```sql
+   -- Marks them confirmed; the database then approves them.
+   update auth.users set email_confirmed_at = now()
+   where email_confirmed_at is null;
+   ```
+
+3. Set up the CAPTCHA (`LAUNCH-CHECKLIST.md` item 3). With instant,
+   auto-approved signup it's the main thing stopping bots.
+
+**What you give up until email is on:**
+
+- Emails aren't verified. Someone could sign up with another person's
+  address. Admins remove fake accounts (the Report button helps).
+- Nobody can reset their own password. An admin does it by hand:
+
+  ```sql
+  -- Pick a temporary password and tell the member through a channel you
+  -- trust (text, in person). They can change it at /reset-password once
+  -- signed in.
+  update auth.users
+     set encrypted_password = extensions.crypt('Temp-password-123', extensions.gen_salt('bf')),
+         updated_at = now()
+   where email = 'member@example.com';
+  ```
+
+**Turning email on later:**
+
+1. Do path A or B below, plus "Both paths: finish setup", and test.
+2. Vercel → Settings → Environment Variables: add
+   `NEXT_PUBLIC_EMAIL_ENABLED` = `true`, then redeploy. Forgot password,
+   "send a new link" and invites come back.
+3. Supabase: turn **Confirm email** back on. New members confirm from then
+   on. Members who joined during launch mode stay marked as confirmed even
+   though their addresses were never checked.
+
 **Why it matters:** Supabase's built-in sender only emails members of your
 Supabase team, about 2 an hour. Until custom SMTP is set up, a real Aggie
 who signs up never gets the confirmation link and can't get in.

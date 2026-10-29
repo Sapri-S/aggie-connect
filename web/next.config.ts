@@ -14,11 +14,13 @@ const supabaseOrigin = process.env.NEXT_PUBLIC_SUPABASE_URL
 // breaking anything. Switch the header name to enforce.
 const csp = [
   "default-src 'self'",
-  `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""}`,
+  `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""} https://challenges.cloudflare.com`,
   "style-src 'self' 'unsafe-inline'",
   `img-src 'self' blob: data: ${supabaseOrigin}`.trim(),
   "font-src 'self'",
-  "connect-src 'self'",
+  "connect-src 'self' https://challenges.cloudflare.com",
+  // The Turnstile CAPTCHA widget is an iframe.
+  "frame-src https://challenges.cloudflare.com",
   "object-src 'none'",
   "base-uri 'self'",
   "form-action 'self'",

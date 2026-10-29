@@ -74,3 +74,10 @@ migration runs.
   account), the Report form, the directory filter and the admin Reports
   queue. They need the migration in a database first. After running it on
   production, click through each one once, signed in.
+- 2026-10-29: PR 14 merged; the launch migration is in production.
+- 2026-10-29: **launching without email** (owner's call). Branch
+  `claude/email-off`: signup signs people straight in (to Edit profile with
+  a welcome banner) when Supabase confirmation is off; forgot password,
+  "send a new link" and invites hide until `NEXT_PUBLIC_EMAIL_ENABLED=true`;
+  optional Turnstile CAPTCHA on sign-in, sign-up and the email forms, on
+  once `NEXT_PUBLIC_TURNSTILE_SITE_KEY` is set. Steps in `EMAIL-SETUP.md`.

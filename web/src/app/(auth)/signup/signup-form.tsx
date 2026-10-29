@@ -4,7 +4,9 @@ import Link from "next/link";
 import { useActionState, useState } from "react";
 import { signUp } from "../actions";
 import { ResendConfirmation } from "../resend-confirmation";
+import { EMAIL_ENABLED } from "@/lib/site";
 import { Field, FormMessage, SubmitButton } from "@/components/form-fields";
+import { Turnstile } from "@/components/turnstile";
 import type { FormState } from "@/lib/validation";
 
 export function SignupForm() {
@@ -85,7 +87,7 @@ export function SignupForm() {
         defaultValue={state.values?.email}
         required
         errors={state.fieldErrors?.email}
-        hint="Any email works. You're in as soon as you confirm it."
+        hint={EMAIL_ENABLED ? "Any email works. You're in as soon as you confirm it." : "Any email works. Only admins can see it."}
       />
       <Field
         label="Class year"
@@ -107,6 +109,7 @@ export function SignupForm() {
         hint="At least 10 characters."
         errors={state.fieldErrors?.password}
       />
+      <Turnstile resetKey={state} />
       <SubmitButton pending={pending}>Create account</SubmitButton>
       <p className="text-center text-xs text-muted">
         By creating an account you agree to the{" "}

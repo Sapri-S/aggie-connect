@@ -4,13 +4,27 @@ import Link from "next/link";
 import { useActionState } from "react";
 import { requestPasswordReset } from "../actions";
 import { AuthCard, Field, FormMessage, SubmitButton } from "@/components/form-fields";
+import { Turnstile } from "@/components/turnstile";
+import { EMAIL_ENABLED } from "@/lib/site";
 import type { FormState } from "@/lib/validation";
+import { ForgotWithoutEmail } from "../forgot-without-email";
 
 export default function ForgotPasswordPage() {
   const [state, action, pending] = useActionState<FormState, FormData>(
     requestPasswordReset,
     {},
   );
+
+  if (!EMAIL_ENABLED) {
+    return (
+      <AuthCard title="Reset your password">
+        <ForgotWithoutEmail />
+        <Link href="/login" className="mt-4 inline-block text-sm font-semibold text-primary hover:underline">
+          Back to sign in
+        </Link>
+      </AuthCard>
+    );
+  }
 
   return (
     <AuthCard title="Reset your password">
@@ -41,6 +55,7 @@ export default function ForgotPasswordPage() {
             defaultValue={state.values?.email}
             errors={state.fieldErrors?.email}
           />
+          <Turnstile resetKey={state} />
           <SubmitButton pending={pending}>Send reset link</SubmitButton>
           <p className="text-center text-sm text-muted">
             Remembered it?{" "}

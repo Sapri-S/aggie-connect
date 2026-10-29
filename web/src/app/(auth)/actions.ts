@@ -13,6 +13,15 @@ import {
   type FormState,
 } from "@/lib/validation";
 
+// The Turnstile widget adds this field to the form. Supabase verifies it when
+// CAPTCHA is on (Authentication → Attack Protection) and ignores it otherwise.
+function captchaToken(formData: FormData) {
+  const token = formData.get("cf-turnstile-response");
+  return typeof token === "string" && token ? token : undefined;
+}
+
+const CAPTCHA_ERROR = "Complete the \"I'm human\" check and try again.";
+
 export async function requestPasswordReset(
   _prev: FormState,
   formData: FormData,
@@ -27,8 +36,10 @@ export async function requestPasswordReset(
   const supabase = await createClient();
   const { error } = await supabase.auth.resetPasswordForEmail(parsed.data.email, {
     redirectTo: `${origin}/auth/confirm?next=/reset-password`,
+    captchaToken: captchaToken(formData),
   });
 
+  if (error?.code === "captcha_failed") return { values, error: CAPTCHA_ERROR };
   if (error?.code === "over_email_send_rate_limit") {
     return { values, error: "Too many requests right now. Try again in a few minutes." };
   }
@@ -56,9 +67,10 @@ export async function resendConfirmation(
   const { error } = await supabase.auth.resend({
     type: "signup",
     email: parsed.data.email,
-    options: { emailRedirectTo: `${origin}/auth/confirm` },
+    options: { emailRedirectTo: `${origin}/auth/confirm`, captchaToken: captchaToken(formData) },
   });
 
+  if (error?.code === "captcha_failed") return { error: CAPTCHA_ERROR };
   if (error?.code === "over_email_send_rate_limit" || error?.status === 429) {
     return { error: "We just sent one. Wait a minute, then try again." };
   }
@@ -113,9 +125,13 @@ export async function signIn(
   }
 
   const supabase = await createClient();
-  const { error } = await supabase.auth.signInWithPassword(parsed.data);
+  const { error } = await supabase.auth.signInWithPassword({
+    ...parsed.data,
+    options: { captchaToken: captchaToken(formData) },
+  });
 
   if (error) {
+    if (error.code === "captcha_failed") return { values, error: CAPTCHA_ERROR };
     if (error.code === "email_not_confirmed") {
       return {
         values,
@@ -145,11 +161,12 @@ export async function signUp(
   const origin = (await headers()).get("origin") ?? "";
 
   const supabase = await createClient();
-  const { error } = await supabase.auth.signUp({
+  const { data, error } = await supabase.auth.signUp({
     email,
     password,
     options: {
       emailRedirectTo: `${origin}/auth/confirm`,
+      captchaToken: captchaToken(formData),
       // Read by the handle_new_user trigger. It ignores anything else, so a
       // user can't make themselves an admin by adding fields here.
       data: {
@@ -165,12 +182,23 @@ export async function signUp(
     if (error.code === "weak_password") {
       return { values, fieldErrors: { password: [error.message] } };
     }
+    if (error.code === "captcha_failed") return { values, error: CAPTCHA_ERROR };
+    // Only reported when email confirmation is off; with it on, Supabase
+    // answers the same as for a new address.
+    if (error.code === "user_already_exists" || error.code === "email_exists") {
+      return { values, fieldErrors: { email: ["That email already has an account. Sign in instead."] } };
+    }
     if (error.code === "over_email_send_rate_limit") {
       return { values, error: "Too many sign-ups right now. Try again in a few minutes." };
     }
     console.error("signUp failed", error.code ?? error.name);
     return { values, error: "Couldn't create your account. Try again." };
   }
+
+  // With email confirmation off in Supabase, the new member is signed in
+  // (and approved by the database) right away: send them to fill in their
+  // profile.
+  if (data.session) redirect("/profile/edit?welcome=1");
 
   // Same message whether or not the email already had an account.
   return {

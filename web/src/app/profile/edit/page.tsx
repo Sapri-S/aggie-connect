@@ -10,17 +10,18 @@ import { ProfileForm } from "./profile-form";
 
 export const metadata: Metadata = { title: "Edit profile" };
 
-export default function EditProfilePage() {
+export default function EditProfilePage({ searchParams }: PageProps<"/profile/edit">) {
   return (
     <div className="mx-auto max-w-3xl px-4 py-6 sm:py-8">
       <Suspense fallback={<p className="text-muted">Loading…</p>}>
-        <EditProfile />
+        <EditProfile searchParams={searchParams} />
       </Suspense>
     </div>
   );
 }
 
-async function EditProfile() {
+async function EditProfile({ searchParams }: Pick<PageProps<"/profile/edit">, "searchParams">) {
+  const { welcome } = await searchParams;
   const supabase = await createClient();
   const {
     data: { user },
@@ -40,6 +41,19 @@ async function EditProfile() {
 
   return (
     <div className="space-y-6">
+      {welcome && (
+        <div className="rounded-xl border border-line border-l-4 border-l-gold bg-surface p-4 sm:p-5">
+          <p className="font-heading text-lg font-bold">Aggie Pride, {p.first_name}! You&apos;re in.</p>
+          <p className="mt-1 text-sm text-muted">
+            Add a photo, where you work and what you&apos;re open to helping with, so other
+            Aggies can find you. Then head to the{" "}
+            <Link href="/directory" className="font-semibold text-primary hover:underline">
+              directory
+            </Link>
+            .
+          </p>
+        </div>
+      )}
       <div className="flex items-center justify-between gap-4">
         <h1 className="text-2xl font-extrabold">Edit your profile</h1>
         <Link
