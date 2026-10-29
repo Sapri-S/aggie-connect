@@ -89,6 +89,8 @@ export type FormState = {
   error?: string;
   fieldErrors?: Record<string, string[] | undefined>;
   success?: string;
+  // Sign-in only: the account exists but its email isn't confirmed yet.
+  unconfirmed?: boolean;
   // Echoed back so the form keeps what the user typed after an error.
   // Never includes passwords.
   values?: Record<string, string>;

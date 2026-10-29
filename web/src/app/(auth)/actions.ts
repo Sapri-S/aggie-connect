@@ -41,6 +41,35 @@ export async function requestPasswordReset(
   };
 }
 
+// Sends a fresh sign-up confirmation link, for when the first one was lost,
+// landed in spam or expired. Supabase also allows only one per address per
+// minute.
+export async function resendConfirmation(
+  _prev: FormState,
+  formData: FormData,
+): Promise<FormState> {
+  const parsed = forgotPasswordSchema.safeParse(Object.fromEntries(formData));
+  if (!parsed.success) return { error: "Enter a valid email." };
+
+  const origin = (await headers()).get("origin") ?? "";
+  const supabase = await createClient();
+  const { error } = await supabase.auth.resend({
+    type: "signup",
+    email: parsed.data.email,
+    options: { emailRedirectTo: `${origin}/auth/confirm` },
+  });
+
+  if (error?.code === "over_email_send_rate_limit" || error?.status === 429) {
+    return { error: "We just sent one. Wait a minute, then try again." };
+  }
+  if (error) console.error("resend confirmation failed", error.code ?? error.name);
+
+  // Same message whether or not the email has an unconfirmed account.
+  return {
+    success: `If ${parsed.data.email} is waiting to be confirmed, a new link is on its way. Check your spam folder too.`,
+  };
+}
+
 export async function setNewPassword(
   _prev: FormState,
   formData: FormData,
@@ -88,7 +117,11 @@ export async function signIn(
 
   if (error) {
     if (error.code === "email_not_confirmed") {
-      return { values, error: "Confirm your email first. Check your inbox for the link." };
+      return {
+        values,
+        unconfirmed: true,
+        error: "Confirm your email first. Check your inbox (and spam) for the link.",
+      };
     }
     // One message for every other failure, so the form doesn't reveal
     // which emails have accounts.
@@ -141,6 +174,7 @@ export async function signUp(
 
   // Same message whether or not the email already had an account.
   return {
+    values: { email },
     success: `Check ${email} for a confirmation link to finish signing up.`,
   };
 }

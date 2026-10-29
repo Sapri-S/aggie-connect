@@ -2,16 +2,16 @@ import Link from "next/link";
 
 const FEATURES = [
   {
-    title: "Find a mentor",
-    body: "Get matched with A&T alumni in the field you're aiming for, and see why each match fits.",
-  },
-  {
-    title: "Hiring Aggies",
-    body: "Jobs posted by alumni who want to hire Aggies, with referral requests built in.",
+    title: "Alumni who want to help",
+    body: "See which Aggies are open to mentoring, job referrals, résumé reviews and coffee chats, and reach out.",
   },
   {
     title: "Your class, your city",
-    body: "Search by class year, major, industry or city. Find Aggies in Greensboro, Charlotte, Atlanta, D.C. and beyond.",
+    body: "Search by name, major, company or city. Find Aggies in Greensboro, Charlotte, Atlanta, D.C. and beyond.",
+  },
+  {
+    title: "Grow your network",
+    body: "Connect with classmates and alumni, and keep your profile current so the right Aggies can find you.",
   },
 ];
 

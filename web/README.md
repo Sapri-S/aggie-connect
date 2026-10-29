@@ -21,6 +21,7 @@ Next.js 16 + Supabase. See `../docs/PLAN-2.0.md` for the full plan.
    6. `20261024000000_auto_approve.sql` (approve everyone who confirms their email)
    7. `20261025000000_connection_limits.sql` (caps on connection requests)
    8. `20261026000000_admin_mfa.sql` (admins need two-factor; see below)
+   9. `20261029000000_launch.sql` (open to helping, member reports, delete my account)
 
    You can also use the CLI: `npx supabase link --project-ref <ref>`, then
    `npx supabase db push`.

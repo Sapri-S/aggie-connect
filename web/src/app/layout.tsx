@@ -1,7 +1,9 @@
 import type { Metadata, Viewport } from "next";
 import { Montserrat, Open_Sans } from "next/font/google";
+import Link from "next/link";
 import { Suspense } from "react";
 import { SiteHeader, SiteHeaderShell } from "@/components/site-header";
+import { CONTACT_EMAIL } from "@/lib/site";
 import "./globals.css";
 
 const montserrat = Montserrat({
@@ -45,6 +47,13 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         </Suspense>
         <main className="flex-1">{children}</main>
         <footer className="border-t border-line px-4 py-4 text-center text-xs text-muted sm:py-6 sm:text-sm">
+          <nav aria-label="Site" className="mb-2 flex flex-wrap justify-center gap-x-4 gap-y-1 font-semibold">
+            <Link href="/privacy" className="hover:text-ink hover:underline">Privacy</Link>
+            <Link href="/guidelines" className="hover:text-ink hover:underline">Community guidelines</Link>
+            {CONTACT_EMAIL && (
+              <a href={`mailto:${CONTACT_EMAIL}`} className="hover:text-ink hover:underline">Contact</a>
+            )}
+          </nav>
           Aggie Connect is a student project and is not affiliated with or
           endorsed by North Carolina A&amp;T State University or its alumni
           association.

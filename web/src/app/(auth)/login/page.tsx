@@ -6,7 +6,7 @@ import { LoginForm } from "./login-form";
 export const metadata: Metadata = { title: "Sign in" };
 
 const NOTICES: Record<string, string> = {
-  confirm_failed: "That confirmation link is invalid or expired. Sign in to get a new one, or sign up again.",
+  confirm_failed: "That confirmation link is invalid or expired. Sign in below and we'll offer to send a new one.",
 };
 
 export default function LoginPage({ searchParams }: PageProps<"/login">) {

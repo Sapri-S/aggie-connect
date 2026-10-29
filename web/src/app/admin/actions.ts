@@ -77,6 +77,42 @@ export async function removeMember(target: string): Promise<ActionResult> {
   return {};
 }
 
+// Closes a report. With suspend, also suspends the reported member (both
+// steps are checked and logged in the database).
+export async function resolveReport(
+  reportId: number,
+  suspendTarget: string | null,
+): Promise<ActionResult> {
+  if (!Number.isSafeInteger(reportId) || reportId < 1) return { error: "Unknown report." };
+  if (suspendTarget !== null && (typeof suspendTarget !== "string" || !UUID.test(suspendTarget))) {
+    return { error: "Unknown member." };
+  }
+
+  const { supabase, me } = await adminSession();
+  if (!me) return { error: "Only admins can do that." };
+
+  if (suspendTarget) {
+    if (suspendTarget === me) return { error: "You can't suspend yourself." };
+    const { error } = await supabase.rpc("admin_set_status", {
+      target: suspendTarget,
+      new_status: "suspended",
+    });
+    if (error) {
+      console.error("admin_set_status failed", error.code);
+      return { error: "Couldn't suspend that member. Try again." };
+    }
+  }
+
+  const { error } = await supabase.rpc("admin_resolve_report", { report_id: reportId });
+  if (error) {
+    console.error("admin_resolve_report failed", error.code);
+    return { error: "Couldn't close that report. Try again." };
+  }
+
+  revalidatePath("/admin");
+  return {};
+}
+
 const inviteSchema = z.object({
   email: z.string().trim().toLowerCase().email("Enter a valid email."),
   firstName: z.string().trim().min(1, "First name is required.").max(50),

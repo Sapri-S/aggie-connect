@@ -2,7 +2,9 @@
 
 import { randomUUID } from "node:crypto";
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import sharp from "sharp";
+import { OPEN_TO } from "@/lib/site";
 import { createClient } from "@/lib/supabase/server";
 import {
   AVATAR_MAX_BYTES,
@@ -24,7 +26,12 @@ export async function updateProfile(
   _prev: FormState,
   formData: FormData,
 ): Promise<FormState> {
-  const values = echoValues(formData);
+  // Checkboxes send one entry per ticked box; keep only known values.
+  const allowed: readonly string[] = OPEN_TO.map((o) => o.value);
+  const openTo = [...new Set(formData.getAll("openTo"))].filter(
+    (v): v is string => typeof v === "string" && allowed.includes(v),
+  );
+  const values = { ...echoValues(formData), openTo: openTo.join(",") };
   const parsed = profileSchema.safeParse(Object.fromEntries(formData));
   if (!parsed.success) {
     return { values, fieldErrors: parsed.error.flatten().fieldErrors };
@@ -49,6 +56,7 @@ export async function updateProfile(
       city: p.city,
       bio: p.bio,
       linkedin_url: p.linkedinUrl,
+      open_to: openTo,
     })
     .eq("id", user.id);
 
@@ -149,4 +157,36 @@ export async function removeAvatar(): Promise<FormState> {
 
   revalidatePath("/profile/edit");
   return { success: "Photo removed." };
+}
+
+export async function deleteAccount(
+  _prev: FormState,
+  formData: FormData,
+): Promise<FormState> {
+  if (formData.get("confirm") !== "DELETE") {
+    return { error: "Type DELETE in capitals to confirm." };
+  }
+
+  const { supabase, user } = await requireUser();
+  if (!user) return { error: "Your session expired. Sign in again." };
+
+  // Photos first: storage has no cascade, and once the account is gone the
+  // user can no longer delete their own folder.
+  const { data: files } = await supabase.storage.from("avatars").list(user.id);
+  if (files?.length) {
+    await supabase.storage.from("avatars").remove(files.map((f) => `${user.id}/${f.name}`));
+  }
+
+  const { error } = await supabase.rpc("delete_my_account");
+  if (error) {
+    if (error.message.includes("admins cannot")) {
+      return { error: "Admins can't delete their own account here. Ask another admin to remove your admin role first." };
+    }
+    console.error("delete_my_account failed", error.code);
+    return { error: "Couldn't delete your account. Try again." };
+  }
+
+  // The account is gone; this clears the session cookies.
+  await supabase.auth.signOut();
+  redirect("/goodbye");
 }

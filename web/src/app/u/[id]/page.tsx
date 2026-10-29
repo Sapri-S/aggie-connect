@@ -6,7 +6,9 @@ import { Avatar } from "@/components/avatar";
 import { ConnectButton } from "@/components/connect-button";
 import { signAvatarUrls } from "@/lib/avatars";
 import { connectionWith } from "@/lib/connections";
+import { openToLabel } from "@/lib/site";
 import { createClient } from "@/lib/supabase/server";
+import { ReportForm } from "./report-form";
 
 export const metadata: Metadata = { title: "Profile" };
 
@@ -43,7 +45,7 @@ async function Profile({ params }: Pick<PageProps<"/u/[id]">, "params">) {
   const { data: p, error } = await supabase
     .from("profiles")
     .select(
-      "id, first_name, last_name, role, class_year, headline, job_title, company, major, city, bio, linkedin_url, avatar_path",
+      "id, first_name, last_name, role, class_year, headline, job_title, company, major, city, bio, linkedin_url, avatar_path, open_to",
     )
     .eq("id", id)
     .maybeSingle();
@@ -107,6 +109,19 @@ async function Profile({ params }: Pick<PageProps<"/u/[id]">, "params">) {
           <li>{ROLE_LABEL[p.role] ?? "Member"}</li>
         </ul>
 
+        {p.open_to?.length > 0 && (
+          <div className="mt-4">
+            <p className="text-sm font-semibold">Open to helping Aggies with</p>
+            <ul className="mt-2 flex flex-wrap gap-2">
+              {p.open_to.map((o: string) => (
+                <li key={o} className="rounded-full bg-gold px-3 py-1 text-sm font-semibold text-on-gold">
+                  {openToLabel(o)}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
         {p.linkedin_url && (
           <a
             href={p.linkedin_url}
@@ -137,6 +152,8 @@ async function Profile({ params }: Pick<PageProps<"/u/[id]">, "params">) {
             so Aggies can find you.
           </p>
         )}
+
+        {!isMe && <ReportForm target={p.id} firstName={p.first_name} />}
       </div>
     </article>
   );
