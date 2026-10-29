@@ -3,8 +3,11 @@
 import Link from "next/link";
 import { useActionState } from "react";
 import { signIn } from "../actions";
+import { ForgotWithoutEmail } from "../forgot-without-email";
 import { ResendConfirmation } from "../resend-confirmation";
+import { EMAIL_ENABLED } from "@/lib/site";
 import { Field, FormMessage, SubmitButton } from "@/components/form-fields";
+import { Turnstile } from "@/components/turnstile";
 import type { FormState } from "@/lib/validation";
 
 export function LoginForm({ next, notice }: { next?: string; notice?: string }) {
@@ -38,13 +41,18 @@ export function LoginForm({ next, notice }: { next?: string; notice?: string }) 
           errors={state.fieldErrors?.password}
         />
         <div className="-mt-2 text-right">
-          <Link
-            href="/forgot-password"
-            className="inline-flex min-h-11 items-center text-sm font-semibold text-primary hover:underline sm:min-h-0"
-          >
-            Forgot password?
-          </Link>
+          {EMAIL_ENABLED ? (
+            <Link
+              href="/forgot-password"
+              className="inline-flex min-h-11 items-center text-sm font-semibold text-primary hover:underline sm:min-h-0"
+            >
+              Forgot password?
+            </Link>
+          ) : (
+            <ForgotWithoutEmail />
+          )}
         </div>
+        <Turnstile resetKey={state} />
         <SubmitButton pending={pending}>Sign in</SubmitButton>
         <p className="text-center text-sm text-muted">
           New here?{" "}

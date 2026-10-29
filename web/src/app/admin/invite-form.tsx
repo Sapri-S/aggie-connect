@@ -3,12 +3,22 @@
 import { useActionState, useState } from "react";
 import { inviteMember } from "./actions";
 import { Field, FormMessage, SubmitButton } from "@/components/form-fields";
+import { EMAIL_ENABLED } from "@/lib/site";
 import type { FormState } from "@/lib/validation";
 
 export function InviteForm({ enabled }: { enabled: boolean }) {
   const [state, action, pending] = useActionState<FormState, FormData>(inviteMember, {});
   const [role, setRole] = useState<"student" | "alumni">("alumni");
   const v = (k: string) => state.values?.[k];
+
+  if (!EMAIL_ENABLED) {
+    return (
+      <p className="text-sm text-muted">
+        Invites are sent by email, which isn&apos;t set up yet. Until it is, share the
+        signup link instead: <code className="rounded bg-primary-tint px-1">/signup</code>.
+      </p>
+    );
+  }
 
   if (!enabled) {
     return (
