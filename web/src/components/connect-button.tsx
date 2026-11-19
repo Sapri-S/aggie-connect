@@ -15,11 +15,6 @@ export type ConnectState =
   | { kind: "incoming"; id: number }
   | { kind: "connected"; id: number };
 
-// On phones the controls fill their row in equal widths, 44px tall; from
-// `sm` up they are compact and right-aligned.
-const size = "btn flex-1 px-4 text-sm sm:flex-none";
-const primary = `${size} btn-primary`;
-const secondary = `${size} btn-secondary`;
 const status = "inline-flex items-center gap-1 rounded-md bg-primary-tint text-sm font-semibold text-primary";
 
 export function ConnectButton({
@@ -27,12 +22,20 @@ export function ConnectButton({
   firstName,
   state,
   compact = false,
+  fill = false,
 }: {
   otherId: string;
   firstName: string;
   state: ConnectState;
   compact?: boolean;
+  /** Buttons always fill the available width (for cards). */
+  fill?: boolean;
 }) {
+  // On phones the controls fill their row in equal widths, 44px tall; from
+  // `sm` up they are compact and right-aligned, unless `fill`.
+  const size = `btn flex-1 px-4 text-sm ${fill ? "" : "sm:flex-none"}`;
+  const primary = `${size} btn-primary`;
+  const secondary = `${size} btn-secondary`;
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string>();
   const [confirmRemove, setConfirmRemove] = useState(false);
@@ -115,8 +118,8 @@ export function ConnectButton({
   }
 
   return (
-    <div className={`flex flex-col gap-1 sm:items-end ${compact ? "items-end" : "w-full sm:w-auto"}`}>
-      <div className="flex flex-wrap items-center gap-2 sm:justify-end">{controls}</div>
+    <div className={`flex flex-col gap-1 ${fill ? "w-full" : `sm:items-end ${compact ? "items-end" : "w-full sm:w-auto"}`}`}>
+      <div className={`flex flex-wrap items-center gap-2 ${fill ? "" : "sm:justify-end"}`}>{controls}</div>
       {error && (
         <p role="alert" className="text-sm text-danger sm:text-right">
           {error}
