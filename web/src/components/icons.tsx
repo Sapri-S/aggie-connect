@@ -83,3 +83,32 @@ export const MenuIcon = ({ className }: NavIconProps) => (
     <path d="M4 6h16M4 12h16M4 18h16" />
   </Icon>
 );
+
+export const HelpIcon = ({ className }: NavIconProps) => (
+  <Icon className={className}>
+    <circle cx="12" cy="12" r="9" />
+    <circle cx="12" cy="12" r="4" />
+    <path d="m5.6 5.6 3.6 3.6M14.8 14.8l3.6 3.6M18.4 5.6l-3.6 3.6M9.2 14.8l-3.6 3.6" />
+  </Icon>
+);
+
+export const EditIcon = ({ className }: NavIconProps) => (
+  <Icon className={className}>
+    <path d="M4 20h4L19 9a2.8 2.8 0 0 0-4-4L4 16z" />
+    <path d="m13.5 6.5 4 4" />
+  </Icon>
+);
+
+export const KeyIcon = ({ className }: NavIconProps) => (
+  <Icon className={className}>
+    <circle cx="8" cy="15" r="4" />
+    <path d="m10.8 12.2 8.7-8.7M16 7l3 3M14 9l2 2" />
+  </Icon>
+);
+
+export const ExternalIcon = ({ className }: NavIconProps) => (
+  <Icon className={className}>
+    <path d="M14 4h6v6M20 4l-9 9" />
+    <path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5" />
+  </Icon>
+);
