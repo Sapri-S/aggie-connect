@@ -1,0 +1,85 @@
+import type { ReactNode } from "react";
+
+// Our own small icon set (no icon library). 24×24, 2px strokes. Navigation
+// icons have a filled version for the active tab.
+
+function Icon({ children, className = "h-6 w-6" }: { children: ReactNode; className?: string }) {
+  return (
+    <svg
+      aria-hidden
+      viewBox="0 0 24 24"
+      className={className}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      {children}
+    </svg>
+  );
+}
+
+type NavIconProps = { filled?: boolean; className?: string };
+
+export const HomeIcon = ({ filled, className }: NavIconProps) => (
+  <Icon className={className}>
+    {filled ? (
+      <path fill="currentColor" d="M12 3 3 10.5V21h6.5v-6h5v6H21V10.5z" />
+    ) : (
+      <>
+        <path d="M3 10.5 12 3l9 7.5" />
+        <path d="M5 9v11h5v-6h4v6h5V9" />
+      </>
+    )}
+  </Icon>
+);
+
+export const SearchIcon = ({ filled, className }: NavIconProps) => (
+  <Icon className={className}>
+    <circle cx="11" cy="11" r="7" strokeWidth={filled ? 3 : 2} />
+    <path d="m20 20-3.5-3.5" strokeWidth={filled ? 3 : 2} />
+  </Icon>
+);
+
+export const PeopleIcon = ({ filled, className }: NavIconProps) => (
+  <Icon className={className}>
+    {filled ? (
+      <g fill="currentColor" stroke="none">
+        <circle cx="9" cy="8" r="3.75" />
+        <path d="M2 20.5a7 7 0 0 1 14 0z" />
+        <circle cx="17" cy="9" r="2.75" />
+        <path d="M17.2 20.5H22a5 5 0 0 0-6.9-4.6 8.4 8.4 0 0 1 2.1 4.6z" />
+      </g>
+    ) : (
+      <>
+        <circle cx="9" cy="8" r="3.5" />
+        <path d="M2.5 20a6.5 6.5 0 0 1 13 0" />
+        <path d="M16 4.6a3.5 3.5 0 0 1 0 6.8" />
+        <path d="M18 14.2a6.5 6.5 0 0 1 3.5 5.8" />
+      </>
+    )}
+  </Icon>
+);
+
+export const PersonIcon = ({ filled, className }: NavIconProps) => (
+  <Icon className={className}>
+    {filled ? (
+      <g fill="currentColor" stroke="none">
+        <circle cx="12" cy="8" r="4.25" />
+        <path d="M3.5 21.5a8.5 8.5 0 0 1 17 0z" />
+      </g>
+    ) : (
+      <>
+        <circle cx="12" cy="8" r="4" />
+        <path d="M4 21a8 8 0 0 1 16 0" />
+      </>
+    )}
+  </Icon>
+);
+
+export const MenuIcon = ({ className }: NavIconProps) => (
+  <Icon className={className}>
+    <path d="M4 6h16M4 12h16M4 18h16" />
+  </Icon>
+);
