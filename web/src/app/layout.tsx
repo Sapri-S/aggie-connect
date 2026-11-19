@@ -41,7 +41,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           <SiteHeader />
         </Suspense>
         <main className="flex-1">{children}</main>
-        <footer className="border-t border-line px-4 py-4 text-center text-xs text-muted sm:py-6 sm:text-sm">
+        <footer className="site-footer border-t border-line px-4 py-4 text-center text-xs text-muted sm:py-6 sm:text-sm">
           <nav aria-label="Site" className="mb-2 flex flex-wrap justify-center gap-x-4 gap-y-1 font-semibold">
             <Link href="/privacy" className="hover:text-ink hover:underline">Privacy</Link>
             <Link href="/guidelines" className="hover:text-ink hover:underline">Community guidelines</Link>
@@ -49,7 +49,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
               <a href={`mailto:${CONTACT_EMAIL}`} className="hover:text-ink hover:underline">Contact</a>
             )}
           </nav>
-          {/* Moves into the account menu with the new top bar. */}
+          {/* Signed-in pages have these in the account menu instead. */}
           <ThemeSwitch className="mb-3" />
           Aggie Connect is a student project and is not affiliated with or
           endorsed by North Carolina A&amp;T State University or its alumni

@@ -223,3 +223,9 @@ body {
     border-color: var(--danger);
   }
 }
+
+/* Signed in, the footer's links, display switch and disclaimer live in the
+   account menu (components/account-menu), like on social apps. */
+body:has(#account-menu) .site-footer {
+  display: none;
+}
