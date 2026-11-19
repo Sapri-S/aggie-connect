@@ -112,3 +112,32 @@ export const ExternalIcon = ({ className }: NavIconProps) => (
     <path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5" />
   </Icon>
 );
+
+export const BriefcaseIcon = ({ className }: NavIconProps) => (
+  <Icon className={className}>
+    <rect x="3" y="7" width="18" height="13" rx="2" />
+    <path d="M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2M3 13h18" />
+  </Icon>
+);
+
+export const CapIcon = ({ className }: NavIconProps) => (
+  <Icon className={className}>
+    <path d="m2 9 10-5 10 5-10 5z" />
+    <path d="M6 11v5c3 2 9 2 12 0v-5M22 9v5" />
+  </Icon>
+);
+
+export const PinIcon = ({ className }: NavIconProps) => (
+  <Icon className={className}>
+    <path d="M12 21s-7-6.2-7-12a7 7 0 0 1 14 0c0 5.8-7 12-7 12z" />
+    <circle cx="12" cy="9" r="2.5" />
+  </Icon>
+);
+
+export const DotsIcon = ({ className }: NavIconProps) => (
+  <Icon className={className}>
+    <circle cx="5" cy="12" r="1" fill="currentColor" />
+    <circle cx="12" cy="12" r="1" fill="currentColor" />
+    <circle cx="19" cy="12" r="1" fill="currentColor" />
+  </Icon>
+);

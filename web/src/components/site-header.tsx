@@ -44,7 +44,11 @@ function HeaderFrame({
 
 // Static placeholder shown while the session is read.
 export function SiteHeaderShell() {
-  return <HeaderFrame home="/" />;
+  return (
+    <div data-header-loading>
+      <HeaderFrame home="/" />
+    </div>
+  );
 }
 
 export async function SiteHeader() {

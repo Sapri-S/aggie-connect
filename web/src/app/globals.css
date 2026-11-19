@@ -229,3 +229,9 @@ body {
 body:has(#account-menu) .site-footer {
   display: none;
 }
+
+/* While the header is still streaming in, we don't know yet whether the
+   visitor is signed in, so keep the footer hidden instead of flashing it. */
+body:has([data-header-loading]) .site-footer {
+  display: none;
+}
