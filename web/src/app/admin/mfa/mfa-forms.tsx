@@ -54,7 +54,7 @@ export function EnrolForm() {
           type="button"
           disabled={pending}
           onClick={() => startTransition(async () => setEnrolment(await startEnrolment()))}
-          className="w-full rounded-md bg-primary px-4 py-2.5 font-semibold text-on-primary hover:bg-primary-hover disabled:opacity-60"
+          className="btn btn-primary w-full"
         >
           {pending ? "One moment…" : "Set up authenticator app"}
         </button>

@@ -1,45 +1,88 @@
 @import "tailwindcss";
 
-/* Aggie Connect design tokens, from NC A&T's palette:
-   Aggie Blue #004684 (PMS 288) and Aggie Gold #FDB927 (PMS 123). */
+/* Aggie Connect design tokens.
+   A plain white (light) or near-black (dark) base. Aggie Blue #004684 is the
+   one main color; Aggie Gold #FDB927 is a rare accent (badges, class year).
+
+   Theme choice: <html data-theme="light|dark"> forces one; no attribute
+   follows the device. lib/theme.ts sets the attribute before first paint. */
 :root {
+  color-scheme: light;
   --primary: #004684;
   --primary-hover: #003563;
-  --primary-tint: #e8f0f8;
+  --primary-tint: #e6eef7;
   --on-primary: #ffffff;
   --gold: #fdb927;
-  --on-gold: #0b2440;
+  --on-gold: #1f1a0e;
   --surface: #ffffff;
-  --canvas: #f4f6f9;
-  --ink: #14202e;
-  --muted: #5b6675;
-  --line: #dde3ea;
+  --surface-2: #f2f4f7;
+  --surface-3: #e4e7eb;
+  --canvas: #f0f2f5;
+  --ink: #111418;
+  --muted: #5f6670;
+  --line: #e3e6ea;
+  --field-border: #8d949e;
   --danger: #b42318;
   --success: #1e6b3a;
+  /* Light mode: cards lift off the gray page with a shadow, no border. */
+  --card-shadow: 0 1px 2px rgb(0 0 0 / 0.1);
+  --card-border: transparent;
 }
 
+/* Dark values, used when the device is dark (unless light is forced) and
+   when dark is forced. Kept in sync by hand: the two blocks are identical. */
 @media (prefers-color-scheme: dark) {
-  :root {
-    /* Aggie Blue is too dark to read on a dark background, so interactive
-       elements use a lighter blue with dark text on top. */
-    --primary: #6ea8e0;
-    --primary-hover: #8dbbe8;
-    --primary-tint: #12233a;
-    --on-primary: #0b1a2a;
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    /* Aggie Blue is too dark to read on black, so interactive elements use
+       a lighter blue with dark text on top. */
+    --primary: #5b9be0;
+    --primary-hover: #7cb0e8;
+    --primary-tint: #16263a;
+    --on-primary: #06111d;
     --gold: #fdb927;
-    --on-gold: #0b2440;
-    --surface: #121a24;
-    --canvas: #0b1118;
-    --ink: #e8eef5;
-    --muted: #9aa7b6;
-    --line: #243142;
+    --on-gold: #1f1a0e;
+    --surface: #18191c;
+    --surface-2: #232529;
+    --surface-3: #2f3237;
+    --canvas: #0d0f12;
+    --ink: #e6e8eb;
+    --muted: #a3a9b1;
+    --line: #2c2f34;
+    --field-border: #6b7079;
     --danger: #f97066;
     --success: #6fcf97;
+    /* Shadows don't show on black; a hairline border separates cards. */
+    --card-shadow: none;
+    --card-border: #2c2f34;
   }
 }
 
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --primary: #5b9be0;
+  --primary-hover: #7cb0e8;
+  --primary-tint: #16263a;
+  --on-primary: #06111d;
+  --gold: #fdb927;
+  --on-gold: #1f1a0e;
+  --surface: #18191c;
+  --surface-2: #232529;
+  --surface-3: #2f3237;
+  --canvas: #0d0f12;
+  --ink: #e6e8eb;
+  --muted: #a3a9b1;
+  --line: #2c2f34;
+  --field-border: #6b7079;
+  --danger: #f97066;
+  --success: #6fcf97;
+  --card-shadow: none;
+  --card-border: #2c2f34;
+}
+
 @theme inline {
-  /* Brand surfaces (hero, banners) stay true Aggie Blue in both themes. */
+  /* The profile cover and other brand surfaces stay true Aggie Blue in both
+     themes. */
   --color-brand: #004684;
   --color-primary: var(--primary);
   --color-primary-hover: var(--primary-hover);
@@ -48,14 +91,18 @@
   --color-gold: var(--gold);
   --color-on-gold: var(--on-gold);
   --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-surface-3: var(--surface-3);
   --color-canvas: var(--canvas);
   --color-ink: var(--ink);
   --color-muted: var(--muted);
   --color-line: var(--line);
   --color-danger: var(--danger);
   --color-success: var(--success);
-  --font-sans: var(--font-open-sans);
-  --font-heading: var(--font-montserrat);
+  /* Each device's own font: San Francisco on Apple, Segoe UI on Windows,
+     Roboto on Android. Nothing to download. */
+  --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-heading: var(--font-sans);
 }
 
 /* Safety net: anything wider than the screen is clipped instead of making
@@ -70,6 +117,10 @@ body {
 body {
   background: var(--canvas);
   color: var(--ink);
+  /* 15px body text, a little denser than the 16px default. Form fields stay
+     at 16px (see .field) so iPhone Safari doesn't zoom in on focus. */
+  font-size: 0.9375rem;
+  line-height: 1.4;
 }
 
 /* Phones: signed-in pages get a bottom tab bar (components/mobile-tab-bar).
@@ -89,13 +140,86 @@ body {
   bottom: calc(var(--tabbar-h) + env(safe-area-inset-bottom));
 }
 
-h1,
-h2,
-h3 {
-  font-family: var(--font-montserrat);
-}
-
 :focus-visible {
   outline: 2px solid var(--primary);
   outline-offset: 2px;
+}
+
+/* ---- Shared building blocks ------------------------------------------- */
+
+/* A white (or dark) panel on the gray page. */
+@utility card {
+  background: var(--surface);
+  border: 1px solid var(--card-border);
+  border-radius: 0.5rem;
+  box-shadow: var(--card-shadow);
+}
+
+/* Buttons: 44px tall on phones (thumb-sized), 36px from `sm` up. */
+@utility btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 2.75rem;
+  padding-inline: 1rem;
+  border-radius: 0.375rem;
+  font-weight: 600;
+  line-height: 1.2;
+  white-space: nowrap;
+  cursor: pointer;
+  &:disabled {
+    opacity: 0.6;
+    cursor: default;
+  }
+  @media (width >= 40rem) {
+    min-height: 2.25rem;
+  }
+}
+
+@utility btn-primary {
+  background: var(--primary);
+  color: var(--on-primary);
+  &:hover:not(:disabled) {
+    background: var(--primary-hover);
+  }
+}
+
+@utility btn-secondary {
+  background: var(--surface-2);
+  color: var(--ink);
+  &:hover:not(:disabled) {
+    background: var(--surface-3);
+  }
+}
+
+@utility btn-ghost {
+  background: transparent;
+  color: var(--ink);
+  &:hover:not(:disabled) {
+    background: var(--surface-2);
+  }
+}
+
+/* Text inputs, selects and textareas. */
+@utility field {
+  width: 100%;
+  min-height: 2.75rem;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--field-border);
+  border-radius: 0.375rem;
+  background: var(--surface);
+  color: var(--ink);
+  font-size: 1rem;
+  &::placeholder {
+    color: var(--muted);
+  }
+  &:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 1px var(--primary);
+  }
+  &[aria-invalid="true"] {
+    border-color: var(--danger);
+  }
 }

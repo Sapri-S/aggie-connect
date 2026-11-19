@@ -62,7 +62,7 @@ async function Profile({ params }: Pick<PageProps<"/u/[id]">, "params">) {
   const work = [p.job_title, p.company].filter(Boolean).join(" at ");
 
   return (
-    <article className="overflow-hidden rounded-xl border border-line bg-surface">
+    <article className="overflow-hidden card">
       <div className="h-28 border-b-4 border-gold bg-brand sm:h-36" />
       <div className="px-4 pb-6 sm:px-6">
         {/* Phones: avatar, name, then the actions full width. From `sm` up the

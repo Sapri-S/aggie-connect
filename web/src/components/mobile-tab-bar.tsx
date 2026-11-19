@@ -69,7 +69,7 @@ export function MobileTabBar({
         id="more-menu"
         ref={more}
         popover="auto"
-        className="inset-auto right-2 bottom-above-tabs m-0 mb-2 w-52 rounded-xl border border-line bg-surface p-1.5 text-ink shadow-lg"
+        className="inset-auto right-2 bottom-above-tabs m-0 mb-2 w-52 card p-1.5 text-ink shadow-lg"
       >
         {isAdmin && (
           <Link

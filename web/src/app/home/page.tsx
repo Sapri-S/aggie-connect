@@ -124,7 +124,7 @@ async function Home() {
         </div>
 
         {me?.status === "approved" && (
-          <div className="rounded-xl border border-line bg-surface p-4 sm:p-5">
+          <div className="card p-4 sm:p-5">
             <div className="flex items-center justify-between gap-3">
               <h2 className="font-bold">Newest Aggies</h2>
               <Link

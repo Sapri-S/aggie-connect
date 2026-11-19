@@ -129,9 +129,9 @@ async function Directory({ searchParams }: Pick<PageProps<"/directory">, "search
           placeholder="Search Aggies"
           aria-label="Search Aggies"
           maxLength={80}
-          className="min-h-11 w-full min-w-0 flex-1 rounded-md border border-line bg-surface px-3 text-base text-ink placeholder:text-muted focus:border-primary focus:outline-none"
+          className="field min-w-0 flex-1"
         />
-        <button className="min-h-11 shrink-0 rounded-md bg-primary px-4 font-semibold text-on-primary hover:bg-primary-hover">
+        <button className="btn btn-primary shrink-0">
           Search
         </button>
       </form>
@@ -182,7 +182,7 @@ async function Directory({ searchParams }: Pick<PageProps<"/directory">, "search
             <li key={p.id}>
               <Link
                 href={`/u/${p.id}`}
-                className="flex h-full items-center gap-3 rounded-xl border border-line bg-surface p-3 hover:border-primary"
+                className="flex h-full items-center gap-3 card p-3 hover:border-primary"
               >
                 <Avatar
                   url={p.avatar_path ? urls.get(p.avatar_path) : null}
@@ -214,7 +214,7 @@ async function Directory({ searchParams }: Pick<PageProps<"/directory">, "search
           ))}
         </ul>
       ) : (
-        <p className="rounded-xl border border-line bg-surface px-4 py-8 text-center text-muted">
+        <p className="card px-4 py-8 text-center text-muted">
           {params.q || params.role || params.help
             ? "No Aggies match that. Try a shorter search or another filter."
             : "Nobody here yet. Bring your Aggie Pride and invite your classmates!"}

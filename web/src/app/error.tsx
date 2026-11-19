@@ -25,7 +25,7 @@ export default function ErrorPage({
       <div className="mt-6 flex justify-center gap-3">
         <button
           onClick={() => retry()}
-          className="rounded-md bg-primary px-4 py-2 font-semibold text-on-primary hover:bg-primary-hover"
+          className="btn btn-primary"
         >
           Try again
         </button>

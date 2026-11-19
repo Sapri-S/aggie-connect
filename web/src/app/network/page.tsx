@@ -133,7 +133,7 @@ function Section({
   children: React.ReactNode;
 }) {
   return (
-    <section className="rounded-xl border border-line bg-surface px-4 py-4 sm:px-5">
+    <section className="card px-4 py-4 sm:px-5">
       <h2 className="font-bold">
         {title} <span className="text-muted">({count})</span>
       </h2>

@@ -49,7 +49,7 @@ export function InviteForm({ enabled }: { enabled: boolean }) {
             name="role"
             value={role}
             onChange={(e) => setRole(e.target.value as "student" | "alumni")}
-            className="mt-1 w-full rounded-md border border-line bg-surface px-3 py-2"
+            className="field mt-1"
           >
             <option value="alumni">Alumni</option>
             <option value="student">Student</option>

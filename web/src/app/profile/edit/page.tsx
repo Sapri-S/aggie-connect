@@ -64,7 +64,7 @@ async function EditProfile({ searchParams }: Pick<PageProps<"/profile/edit">, "s
         </Link>
       </div>
 
-      <section className="rounded-xl border border-line bg-surface p-4 sm:p-6">
+      <section className="card p-4 sm:p-6">
         <AvatarForm
           url={p.avatar_path ? (urls.get(p.avatar_path) ?? null) : null}
           firstName={p.first_name}
@@ -72,7 +72,7 @@ async function EditProfile({ searchParams }: Pick<PageProps<"/profile/edit">, "s
         />
       </section>
 
-      <section className="rounded-xl border border-line bg-surface p-4 pb-0 sm:p-6">
+      <section className="card p-4 pb-0 sm:p-6">
         <ProfileForm
           initial={{
             firstName: p.first_name ?? "",
@@ -90,7 +90,7 @@ async function EditProfile({ searchParams }: Pick<PageProps<"/profile/edit">, "s
         />
       </section>
 
-      <section className="rounded-xl border border-line bg-surface p-4 sm:p-6">
+      <section className="card p-4 sm:p-6">
         <DeleteAccountForm />
       </section>
     </div>
