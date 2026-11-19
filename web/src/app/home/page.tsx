@@ -122,8 +122,10 @@ async function Home() {
       <ul className="divide-y divide-line">
         {toMeet.map((p) => (
           <li key={p.id} className="flex flex-wrap items-center gap-x-3 gap-y-2 py-3 first:pt-0 last:pb-0">
-            <PersonLink person={p} url={avatar(p)} className="min-w-0 flex-1" />
-            <ConnectButton otherId={p.id} firstName={p.first_name} state={{ kind: "none" }} compact />
+            <PersonLink person={p} url={avatar(p)} className="min-w-0 flex-1 basis-56" />
+            <div className="ml-auto">
+              <ConnectButton otherId={p.id} firstName={p.first_name} state={{ kind: "none" }} compact />
+            </div>
           </li>
         ))}
       </ul>
@@ -251,10 +253,32 @@ async function Home() {
             </li>
           ))}
         </ul>
+        <div className="card px-4 py-6 text-center">
+          <p className="font-semibold">You&apos;re all caught up</p>
+          <p className="mt-1 text-sm text-muted">
+            More from campus on{" "}
+            <a
+              href="https://www.ncat.edu/news/latest/index.php"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-semibold text-primary hover:underline"
+            >
+              ncat.edu
+              <span className="sr-only"> (opens in a new tab)</span>
+            </a>
+            , or find more Aggies in the{" "}
+            <Link href="/directory" className="font-semibold text-primary hover:underline">
+              directory
+            </Link>
+            .
+          </p>
+        </div>
       </section>
 
-      {/* Right: laptops and up. */}
-      <aside className="hidden space-y-4 lg:block">
+      {/* Right: laptops and up. Stays in view while the feed scrolls, like
+          the left column; scrolls on its own if it's taller than the screen. */}
+      <aside className="hidden lg:block">
+        <div className="sticky top-18 max-h-[calc(100dvh-5.5rem)] space-y-4 overflow-y-auto pb-4 [scrollbar-width:thin]">
         {invitationsCard}
         {peopleCard}
         <SideCard
@@ -283,6 +307,7 @@ async function Home() {
             </p>
           )}
         </SideCard>
+        </div>
       </aside>
     </div>
   );
