@@ -16,11 +16,11 @@ export type ConnectState =
   | { kind: "connected"; id: number };
 
 // On phones the controls fill their row in equal widths, 44px tall; from
-// `sm` up they're compact and right-aligned.
-const size =
-  "inline-flex min-h-11 flex-1 items-center justify-center gap-1 rounded-md border px-4 text-sm font-semibold sm:min-h-0 sm:flex-none sm:py-2";
-const primary = `${size} border-transparent bg-primary text-on-primary hover:bg-primary-hover disabled:opacity-60`;
-const secondary = `${size} border-line text-ink hover:bg-primary-tint disabled:opacity-60`;
+// `sm` up they are compact and right-aligned.
+const size = "btn flex-1 px-4 text-sm sm:flex-none";
+const primary = `${size} btn-primary`;
+const secondary = `${size} btn-secondary`;
+const status = "inline-flex items-center gap-1 rounded-md bg-primary-tint text-sm font-semibold text-primary";
 
 export function ConnectButton({
   otherId,
@@ -58,7 +58,7 @@ export function ConnectButton({
     case "outgoing":
       controls = (
         <>
-          <span className={`${size} border-transparent bg-primary-tint text-primary`}>
+          <span className={`${size} ${status} cursor-default`}>
             Request sent
           </span>
           {!compact && (
@@ -97,9 +97,7 @@ export function ConnectButton({
       ) : (
         <>
           <span
-            className={`${
-              compact ? "inline-flex items-center gap-1 rounded-md px-3 py-2 text-sm font-semibold" : `${size} border-transparent`
-            } bg-gold text-on-gold`}
+            className={compact ? `${status} px-3 py-2` : `${size} ${status} cursor-default`}
           >
             <svg aria-hidden viewBox="0 0 20 20" className="h-4 w-4 fill-current">
               <path d="M7.7 14.3 3.4 10l1.4-1.4 2.9 2.9 7.5-7.5 1.4 1.4z" />
