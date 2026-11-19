@@ -3,6 +3,7 @@ const SIZES = {
   sm: "h-10 w-10 text-sm",
   md: "h-16 w-16 text-xl",
   lg: "h-28 w-28 text-3xl",
+  xl: "h-32 w-32 text-4xl sm:h-40 sm:w-40",
 } as const;
 
 export function Avatar({
