@@ -42,3 +42,23 @@ export async function pendingRequestCount(supabase: Supabase, me: string) {
     .eq("status", "pending");
   return count ?? 0;
 }
+
+// How the signed-in user relates to everyone they have a connection row
+// with, keyed by the other person's id. Same rules as connectionWith():
+// a request you declined disappears for you; your declined request still
+// looks pending to you. Anyone missing from the map is { kind: "none" }.
+export async function connectionStates(supabase: Supabase, me: string) {
+  // RLS only returns connections you're part of.
+  const { data } = await supabase
+    .from("connections")
+    .select("id, requester_id, receiver_id, status")
+    .limit(2000);
+  const states = new Map<string, ConnectionState>();
+  for (const r of data ?? []) {
+    const other = r.requester_id === me ? r.receiver_id : r.requester_id;
+    if (r.status === "accepted") states.set(other, { kind: "connected", id: r.id });
+    else if (r.requester_id === me) states.set(other, { kind: "outgoing", id: r.id });
+    else if (r.status !== "declined") states.set(other, { kind: "incoming", id: r.id });
+  }
+  return states;
+}
