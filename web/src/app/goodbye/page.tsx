@@ -13,7 +13,7 @@ export default function GoodbyePage() {
       </p>
       <Link
         href="/"
-        className="mt-6 block rounded-md bg-primary px-4 py-2.5 text-center font-semibold text-on-primary hover:bg-primary-hover"
+        className="btn btn-primary mt-6 w-full"
       >
         Back to Aggie Connect
       </Link>

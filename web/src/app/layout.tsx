@@ -1,20 +1,11 @@
 import type { Metadata, Viewport } from "next";
-import { Montserrat, Open_Sans } from "next/font/google";
 import Link from "next/link";
 import { Suspense } from "react";
 import { SiteHeader, SiteHeaderShell } from "@/components/site-header";
+import { ThemeSwitch } from "@/components/theme-switch";
 import { CONTACT_EMAIL } from "@/lib/site";
+import { THEME_COLORS, THEME_SCRIPT } from "@/lib/theme";
 import "./globals.css";
-
-const montserrat = Montserrat({
-  variable: "--font-montserrat",
-  subsets: ["latin"],
-});
-
-const openSans = Open_Sans({
-  variable: "--font-open-sans",
-  subsets: ["latin"],
-});
 
 export const metadata: Metadata = {
   title: { default: "Aggie Connect", template: "%s · Aggie Connect" },
@@ -22,10 +13,11 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  // Browser chrome: Aggie Blue in light mode, the dark surface in dark mode.
+  // Browser chrome matches the top bar. lib/theme.ts swaps these when the
+  // visitor forces Light or Dark.
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#004684" },
-    { media: "(prefers-color-scheme: dark)", color: "#121a24" },
+    { media: "(prefers-color-scheme: light)", color: THEME_COLORS.light },
+    { media: "(prefers-color-scheme: dark)", color: THEME_COLORS.dark },
   ],
   // Lets the bottom tab bar reach the screen edge and pad itself with
   // env(safe-area-inset-bottom) above the iPhone home indicator.
@@ -37,10 +29,13 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html
-      lang="en"
-      className={`${montserrat.variable} ${openSans.variable} h-full antialiased`}
-    >
+    // The theme script sets data-theme before React hydrates, so the
+    // attribute differs from the server HTML on purpose.
+    <html lang="en" className="h-full antialiased" suppressHydrationWarning>
+      <head>
+        {/* A fixed string from lib/theme.ts, no user input. */}
+        <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
+      </head>
       <body className="min-h-full flex flex-col font-sans">
         <Suspense fallback={<SiteHeaderShell />}>
           <SiteHeader />
@@ -54,6 +49,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
               <a href={`mailto:${CONTACT_EMAIL}`} className="hover:text-ink hover:underline">Contact</a>
             )}
           </nav>
+          {/* Moves into the account menu with the new top bar. */}
+          <ThemeSwitch className="mb-3" />
           Aggie Connect is a student project and is not affiliated with or
           endorsed by North Carolina A&amp;T State University or its alumni
           association.

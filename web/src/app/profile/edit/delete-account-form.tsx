@@ -38,7 +38,7 @@ export function DeleteAccountForm() {
             autoComplete="off"
             value={typed}
             onChange={(e) => setTyped(e.target.value)}
-            className="w-full rounded-md border border-line bg-surface px-3 py-2 text-ink focus:border-danger focus:outline-none sm:w-64"
+            className="field sm:w-64"
           />
           <div className="flex flex-wrap gap-2">
             <button

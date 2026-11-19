@@ -73,7 +73,7 @@ export function MemberList({ members, me }: { members: Member[]; me: string }) {
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Search name or email"
           aria-label="Search members"
-          className="min-h-11 w-full rounded-md border border-line bg-surface px-3 text-base sm:min-h-0 sm:w-64 sm:py-1.5 sm:text-sm"
+          className="field sm:w-64"
         />
       </div>
 

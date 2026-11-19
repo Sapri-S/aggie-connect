@@ -23,7 +23,7 @@ export function Field({
         name={name}
         aria-invalid={errors ? true : undefined}
         aria-describedby={errors ? `${id}-error` : undefined}
-        className="mt-1 w-full rounded-md border border-line bg-surface px-3 py-2 text-ink placeholder:text-muted focus:border-primary focus:outline-none"
+        className="field mt-1"
         {...input}
       />
       {hint && !errors && <p className="mt-1 text-xs text-muted">{hint}</p>}
@@ -59,7 +59,7 @@ export function TextArea({
         name={name}
         aria-invalid={errors ? true : undefined}
         aria-describedby={errors ? `${id}-error` : undefined}
-        className="mt-1 w-full rounded-md border border-line bg-surface px-3 py-2 text-ink placeholder:text-muted focus:border-primary focus:outline-none"
+        className="field mt-1"
         {...textarea}
       />
       {hint && !errors && <p className="mt-1 text-xs text-muted">{hint}</p>}
@@ -83,7 +83,7 @@ export function SubmitButton({
     <button
       type="submit"
       disabled={pending}
-      className="w-full rounded-md bg-primary px-4 py-2.5 font-semibold text-on-primary hover:bg-primary-hover disabled:opacity-60"
+      className="btn btn-primary w-full"
     >
       {pending ? "One moment…" : children}
     </button>
@@ -111,8 +111,8 @@ export function FormMessage({ error, success }: { error?: string; success?: stri
 export function AuthCard({ title, children }: { title: string; children: ReactNode }) {
   return (
     <div className="mx-auto w-full max-w-md px-4 py-6 sm:py-12">
-      <div className="rounded-xl border border-line bg-surface p-5 sm:p-8">
-        <h1 className="text-2xl font-extrabold">{title}</h1>
+      <div className="card p-5 sm:p-8">
+        <h1 className="text-2xl font-bold">{title}</h1>
         <div className="mt-6">{children}</div>
       </div>
     </div>

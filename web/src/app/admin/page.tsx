@@ -59,26 +59,26 @@ async function Admin() {
 
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         {stats.map((s) => (
-          <div key={s.label} className="rounded-xl border border-line bg-surface p-4">
+          <div key={s.label} className="card p-4">
             <p className="text-sm text-muted">{s.label}</p>
             <p className="mt-1 font-heading text-2xl font-bold">{s.value}</p>
           </div>
         ))}
       </div>
 
-      <section className="rounded-xl border border-line bg-surface p-4 sm:p-5">
+      <section className="card p-4 sm:p-5">
         <h2 className="mb-4 font-bold">
           Reports{reports.length > 0 && <span className="ml-2 rounded-full bg-gold px-2 py-0.5 text-sm text-on-gold">{reports.length}</span>}
         </h2>
         <ReportList reports={reports} me={user.id} />
       </section>
 
-      <section className="rounded-xl border border-line bg-surface p-4 sm:p-5">
+      <section className="card p-4 sm:p-5">
         <h2 className="mb-4 font-bold">Invite someone</h2>
         <InviteForm enabled={createAdminClient() !== null} />
       </section>
 
-      <section className="rounded-xl border border-line bg-surface p-4 sm:p-5">
+      <section className="card p-4 sm:p-5">
         <h2 className="mb-4 font-bold">Members</h2>
         <MemberList members={members} me={user.id} />
       </section>
